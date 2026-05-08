@@ -4,162 +4,211 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>פורטל סדנת אילת 2035</title>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* פלטת צבעי הליבה - אילת 2035 */
         :root {
-            --bg-gradient: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --primary-blue: #0284c7;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
+            --navy: #113344;
+            --blue: #27336F;
+            --turquoise-light: #81C6DD;
+            --turquoise: #14B8D4;
+            --coral: #BB801C;
+            --yellow: #FAC220;
+            --bg: #E4F4F9;
+            --gray-blue: #4D6475;
+            --gray-dark: #37464B;
+            --white: #ffffff;
+            --radius: 16px;
+            --shadow: 0 8px 30px rgba(17, 51, 68, 0.08);
         }
 
         body {
             font-family: 'Heebo', sans-serif;
-            background: var(--bg-gradient);
-            background-attachment: fixed;
+            background: var(--bg);
+            /* תוספת של הילות צבע עדינות ברקע */
+            background-image: radial-gradient(circle at 100% 0%, rgba(129, 198, 221, 0.3) 0%, transparent 40%), 
+                              radial-gradient(circle at 0% 100%, rgba(20, 184, 212, 0.15) 0%, transparent 40%);
             margin: 0;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            color: var(--text-dark);
+            color: var(--navy);
+            direction: rtl;
         }
 
         .portal-container {
             width: 90%;
-            max-width: 850px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            padding: 50px 30px;
-            border-radius: 30px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 24px;
+            padding: 50px 40px;
+            box-shadow: var(--shadow);
             text-align: center;
-            box-sizing: border-box;
-            position: relative;
         }
 
+        .portal-logo {
+            width: 80px; height: 80px;
+            background: var(--navy);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 25px rgba(17, 51, 68, 0.2);
+            border: 2px solid var(--turquoise-light);
+        }
+
+        .portal-logo svg { width: 40px; height: 40px; }
+
         h1 {
-            font-size: 2.8em;
+            color: var(--navy);
+            font-size: 36px;
             font-weight: 800;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
-            color: var(--text-dark);
+            margin: 0 0 10px 0;
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
-            font-size: 1.2em;
-            color: var(--text-muted);
-            margin-bottom: 45px;
-            font-weight: 400;
+            color: var(--gray-blue);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 40px;
         }
 
         .links-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
-        }
-
-        @media (max-width: 650px) {
-            .links-grid { grid-template-columns: 1fr; }
-            h1 { font-size: 2em; }
+            margin-bottom: 40px;
         }
 
         .portal-card {
-            background: #ffffff;
-            padding: 40px 25px;
-            border-radius: 20px;
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 35px 25px;
             text-decoration: none;
-            color: inherit;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(17, 51, 68, 0.05);
             border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* פס צבעוני שמופיע בחלק העליון של הכרטיסייה במעבר עכבר */
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 5px;
+            background: var(--turquoise);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
 
         .portal-card:hover {
             transform: translateY(-8px);
-            border-color: var(--primary-blue);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 15px 35px rgba(17, 51, 68, 0.12);
+            border-color: rgba(20, 184, 212, 0.1);
+        }
+        
+        .portal-card:hover::before {
+            transform: scaleX(1);
         }
 
         .icon-box {
-            font-size: 4em;
-            margin-bottom: 20px;
-            background: #f1f5f9;
-            width: 100px;
-            height: 100px;
+            width: 75px;
+            height: 75px;
+            background: var(--bg);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
+            font-size: 34px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, background 0.3s ease;
         }
 
         .portal-card:hover .icon-box {
             transform: scale(1.1) rotate(5deg);
+            background: var(--turquoise-light);
         }
 
         .card-title {
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--text-dark);
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--navy);
         }
 
         .card-desc {
-            font-size: 1em;
-            color: var(--text-muted);
+            font-size: 15px;
+            color: var(--gray-blue);
             line-height: 1.5;
+            font-weight: 400;
         }
 
-        /* עיצוב קישור הניהול החדש בתחתית */
         .admin-link {
-            margin-top: 40px;
-            display: inline-block;
+            margin-top: 20px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(17, 51, 68, 0.1);
         }
 
         .admin-link a {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-weight: 700;
-            font-size: 1em;
-            padding: 10px 20px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.5);
-            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            border: 1px solid transparent;
+            color: var(--gray-dark);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 12px 28px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid rgba(17, 51, 68, 0.1);
+            transition: all 0.2s;
         }
 
         .admin-link a:hover {
-            color: var(--primary-blue);
-            background: #ffffff;
-            border-color: var(--primary-blue);
-            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.1);
+            background: var(--blue);
+            color: white;
+            border-color: var(--blue);
+            box-shadow: 0 6px 20px rgba(39, 51, 111, 0.2);
         }
 
         .footer-logo {
-            margin-top: 30px;
-            font-size: 0.9em;
-            font-weight: 700;
-            color: var(--primary-blue);
-            opacity: 0.8;
-            letter-spacing: 1px;
+            margin-top: 35px;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--turquoise);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+        
+        @media (max-width: 768px) {
+            .portal-container { padding: 30px 20px; width: 95%; }
+            h1 { font-size: 28px; }
+            .links-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
     <div class="portal-container">
+        
+        <div class="portal-logo">
+            <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="25" cy="25" r="22" stroke="#14B8D4" stroke-width="2.5"/>
+              <path d="M15 32 C15 22, 25 16, 35 22" stroke="#81C6DD" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <circle cx="25" cy="20" r="5" fill="#14B8D4"/>
+              <path d="M18 35 L32 35" stroke="#FAC220" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+        </div>
+
         <h1>סדנת שירות אילת 2035</h1>
         <p class="subtitle">מעצבים יחד את קומת השירות לתושב במבנה העירייה החדש</p>
 
@@ -167,21 +216,23 @@
             <a href="form.html" class="portal-card">
                 <div class="icon-box">📱</div>
                 <span class="card-title">כניסה למשתתפים</span>
-                <span class="card-desc">מילוי כרטיסיות, בחירת תרחישים והצעת פתרונות מהנייד.</span>
+                <span class="card-desc">אפליקציית מובייל למילוי כרטיסיות, בחירת פרסונות ותרחישים והצעת פתרונות מהנייד.</span>
             </a>
 
             <a href="display.html" class="portal-card">
                 <div class="icon-box">🖥️</div>
                 <span class="card-title">מסך תצוגה ראשי</span>
-                <span class="card-desc">הקרנת רעיונות המשתתפים בזמן אמת בבועות זכוכית מרחפות.</span>
+                <span class="card-desc">תצוגת בועות מרחפות להקרנה על מסך גדול באולם הסדנה. מתעדכן בזמן אמת.</span>
             </a>
         </div>
 
         <div class="admin-link">
-            <a href="admin.html">⚙️ אזור ניהול וסיכום נתונים</a>
+            <a href="admin.html">
+                <span>⚙️</span> פאנל ניהול, נתונים וייצוא
+            </a>
         </div>
 
-        <div class="footer-logo">עיריית אילת • חדשנות בשירות</div>
+        <div class="footer-logo">צוות החדשנות · הזירה אילת</div>
     </div>
 
 </body>
