@@ -162,38 +162,61 @@
     
     .card-img-wrapper {
         width: 100%;
-        aspect-ratio: 1; 
         background: var(--white);
         display: flex;
         align-items: center;
         justify-content: center;
         border-bottom: 1px solid #f1f5f9;
-        padding: 5px; 
+        overflow: hidden; 
+        padding: 0; 
     }
+    
+    #persona-grid .card-img-wrapper {
+        aspect-ratio: 3 / 4; 
+    }
+
+    #scenario-grid .card-img-wrapper {
+        aspect-ratio: 4 / 3; 
+    }
+    
     .card-img-wrapper img { 
         width: 100%; 
         height: 100%; 
-        object-fit: contain; 
+        object-fit: cover; 
     }
     
     .card-label { padding: 8px 4px; font-size: 12px; font-weight: 800; color: var(--navy); text-align: center; line-height: 1.2; background: white; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;}
     .card-label .card-subtitle { color: var(--gray-blue); font-weight: 600; font-size: 10px; display: block; margin-top: 3px;}
 
     .detail-container { flex: 1; overflow-y: auto; padding: 0 0 120px; }
-    .detail-hero { position: relative; width: 100%; background: var(--white); text-align: center; padding-top: 20px;}
-    .detail-hero img { width: 100%; max-width: 400px; max-height: 350px; object-fit: contain; display: inline-block;}
+    
+    .detail-hero { position: relative; width: 100%; background: var(--white); text-align: center; overflow: hidden; }
+    
+    .detail-hero-img { width: 100%; display: inline-block; background: var(--white); }
+    
+    /* תמונת פרסונה - תופסת את כל האזור בלי ליצור גלילה. פוקוס על הפנים/החלק העליון */
+    .detail-hero-img.persona-detail-img { width: 100%; height: 220px; object-fit: cover; object-position: center 15%; }
+    
+    /* תמונת תרחיש - תופסת את כל האזור בלי ליצור גלילה */
+    .detail-hero-img.scenario-detail-img { width: 100%; height: 220px; object-fit: cover; object-position: center; }
+    
+    /* ביטול ריווח עליון כדי שהתמונה תגיע לקצה המסך */
+    #persona-detail-content .detail-hero { padding-top: 0; }
+    #scenario-detail-content .detail-hero { padding-top: 0; }
+
     .detail-hero-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(17,51,68,0.95)); padding: 40px 20px 16px; text-align: right;}
     .detail-hero-name { color: white; font-size: 26px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     .detail-hero-sub { color: var(--turquoise-light); font-size: 15px; margin-top: 2px; font-weight: 600;}
     
-    .detail-body { padding: 20px; }
-    .detail-section { background: white; border-radius: var(--radius); padding: 18px; margin-bottom: 15px; box-shadow: var(--shadow); }
-    .detail-section-label { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--blue); margin-bottom: 8px; }
-    .detail-section-text { font-size: 15px; line-height: 1.6; color: var(--gray-dark); }
+    /* מיקוד וצמצום קל של ריווחים כדי שהכל ייכנס במסך אחד בלי לגלול */
+    .detail-body { padding: 15px 20px; }
+    .detail-section { background: white; border-radius: var(--radius); padding: 14px 18px; margin-bottom: 12px; box-shadow: var(--shadow); }
+    .detail-section-label { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
+    .detail-section-text { font-size: 14px; line-height: 1.5; color: var(--gray-dark); }
     
-    .detail-quote { background: linear-gradient(135deg, var(--navy), var(--blue)); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; position: relative; }
+    .detail-quote { background: linear-gradient(135deg, var(--navy), var(--blue)); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 10px; position: relative; }
     .detail-quote::before { content: '"'; position: absolute; top: 0px; right: 15px; font-size: 60px; color: rgba(129,198,221,0.2); font-family: Georgia, serif; line-height: 1; }
-    .detail-quote-text { color: white; font-size: 16px; font-style: italic; line-height: 1.5; position: relative; z-index: 1; }
+    .detail-quote-text { color: white; font-size: 15px; font-style: italic; line-height: 1.4; position: relative; z-index: 1; }
     
     .detail-footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 16px 20px; padding-bottom: calc(16px + env(safe-area-inset-bottom)); background: white; border-top: 1px solid rgba(0,0,0,0.05); box-shadow: 0 -10px 20px rgba(17,51,68,0.05); z-index: 50;}
     .btn-full { width: 100%; background: var(--turquoise); color: var(--navy); border: none; padding: 16px; border-radius: var(--radius); font-size: 16px; font-weight: 800; cursor: pointer; transition: transform 0.1s; font-family: inherit;}
@@ -494,24 +517,24 @@
 
 <script>
 const PERSONAS = [
-  { id:1,  name:'ליאת',   sub:'האמא',                  need:'סביבה שקטה, קרירה ומרגיעה, שילוט ברור',           quote:'אני חייבת לדעת מראש לאן בדיוק להגיע מהרגע הראשון', img:'DATA/persona1.jpg', desc:'ליאת מגיעה לבניין העירייה אחרי הליכה מתישה בשיא החום, דוחפת עגלה ומרגיעה תינוק שבוכה. היא עמוסה ומוסחת. הדבר האחרון שיש לה סבלנות אליו הוא לחפש דרך.' },
-  { id:2,  name:'דן',     sub:'היזם',                  need:'התנהלות יעילה ומהירה, חלל שמתפקד כמו טרקלין עסקים', quote:'חייב לנצל את זמן ההמתנה לטובת זמן עבודה',         img:'DATA/persona2.jpg', desc:'דן מנהל עסק פעיל באילת ועבורו כל דקה שווה כסף. כל שנייה של המתנה נתפסת כזמן מבוזבז. הוא ממשיך לעבוד מהנייד גם כשנמצא בתוך המבנה.' },
-  { id:3,  name:'אתי',    sub:'בעלת עסק',              need:'מסלול מהיר לבעלי עסקים, טיפול קצר וממוקד',        quote:'העונה מתחילה, אין לי זמן מיותר לבזבז על אישורים',  img:'DATA/persona3.jpg', desc:'כלכלת העסק של אתי נשענת על עונות התיירות. היא מגיעה לפני פתיחת העונה בידיעה שכל עיכוב בירוקרטי פוגע ישירות בפרנסה.' },
-  { id:4,  name:'רועי',   sub:'הסטודנט',               need:'מענה אוטומטי וזריז דרך הנייד, ללא המתנה לפקיד',   quote:'שהמערכת תבדוק לי בשנייה אם אני זכאי למלגה',       img:'DATA/persona4.jpg', desc:'רועי לומד ועובד במלצרות כדי לממן את עצמו. הזמן שלו קצוב. הוא מחפש לשלוף מידע דרך הנייד בלי לעמוד בתורים.' },
-  { id:5,  name:'דוד',    sub:'הגמלאי',                need:'יחס אישי וחם, שירות ללא תלות בטכנולוגיה',         quote:'אני רוצה לדבר עם בן אדם, לא עם מסך',              img:'DATA/persona5.jpg', desc:'דוד שייך לדור הוותיק ולא מסתדר עם מסכים ועמדות שירות עצמי. הוא מחפש לראות פנים מוכרות שיושב מולו, יקשיב ויעזור.' },
-  { id:6,  name:'אבי',    sub:'תושב העיר',             need:'שקיפות, הוגנות ואווירה שמרגיעה מתחים',            quote:'נמאס לי מסחבת, הכל מרגיש כל כך איטי',             img:'DATA/persona6.jpg', desc:'אבי מגיע כבר חסר סבלנות, חושש להיתקע בבירוקרטיה ארוכה. הוא דרוך ומתגונן, מצפה לקושי ולעיכובים.' },
-  { id:7,  name:'דניאל',  sub:'עולה חדש',              need:'הכוונה חזותית בצבעים וסמלים, ללא תלות בשפה',      quote:'אני לא מבין את השילוט ומתבייש לבקש עזרה',         img:'DATA/persona7.jpg', desc:'דניאל עלה לאחרונה מצרפת. קשה לו לקרוא עברית. כשנכנס למבנה רשמי הוא מרגיש מבולבל ותלוש.' },
-  { id:8,  name:'קלואי',  sub:'תושבת חדשה',            need:'תחושת שייכות, חיבור לסיפור ולגאווה של העיר',      quote:'אני רוצה להרגיש שייכת לעיר',                       img:'DATA/persona8.jpg', desc:'קלואי עברה לאילת לפני זמן קצר ומחפשת למצוא את מקומה. כשמגיעה לעירייה, היא זקוקה לאווירה חמה שתפיג תחושת זרות.' },
-  { id:9,  name:'נועם',   sub:'נגישות לכולם',          need:'נגישות מלאה, עצמאות מוחלטת, שוויון',              quote:'אני צריך שהמרחב יראה אותי בטבעיות',                img:'DATA/persona9.jpg', desc:'נועם מתנייד בכיסא גלגלים. חשוב לו מאוד להסתובב בעצמאות מוחלטת, להגיע לכל עמדה ולנוע מבלי להיות תלוי באחרים.' },
-  { id:10, name:'עומר',   sub:'רגישות חושית',          need:'פינות שקטות וסגורות, תאורה עדינה, עיצוב מרגיע',   quote:'האורות החזקים והרעש פה לא נעימים לי',              img:'DATA/persona10.jpg', desc:'עומר רגיש מאוד להצפה חושית. עומס גירויים, רעש ואור חזק גורמים לו למועקה פיזית, חרדה ורצון לברוח.' },
-  { id:11, name:'יעל',    sub:'שירות אנושי',           need:'אזור סטרילי ממעקב טכנולוגי, פרטיות, יחס אנושי',   quote:'אני לא מסכימה שיסרקו אותי, באתי לקבל יחס מבני אדם', img:'DATA/persona11.jpg', desc:'יעל שומרת בקנאות על פרטיותה. היא מסרבת שמצלמות יסרקו אותה, מתנגדת למעקב דיגיטלי ודורשת טיפול רק מבני אדם.' },
-  { id:12, name:'חן',     sub:'הדור הדיגיטלי',         need:'שירות שמתחבר לנייד, פעולה זריזה, עיצוב חדשני',    quote:'למה הייתי צריכה להגיע פיזית? הכל יכול להתבצע מהנייד', img:'DATA/persona12.jpg', desc:'חן רגילה לנהל את כל חייה דרך הטלפון. הגעה פיזית לעירייה נתפסת בעיניה כטרחה מיותרת.' },
-  { id:13, name:'מאיה',   sub:'דור העתיד',             need:'מקום פתוח ויצירתי, כלים עתידניים, עשייה משותפת',  quote:'באתי לעצב את מתחם הנוער שלנו בתלת מימד',          img:'DATA/persona13.jpg', desc:'מאיה נולדה לעולם של מסכים מתקדמים. היא לא מגיעה לעמוד בתור, אלא להשפיע, ליזום ולהרים פרויקטים לנוער.' },
-  { id:14, name:'אלי',    sub:'מנהל התחזוקה',          need:'חומרים עמידים, ריהוט קל לניוד, גישה נוחה לתחזוקה', quote:'האבק המדברי נכנס לכל מקום, חייבים לנקות בקלות',  img:'DATA/persona14.jpg', desc:'אלי והצוות שלו נאבקים יום יום בחול המדברי ובלכלוך. עיצוב מסורבל עם פינות נסתרות מקשה מאוד על עבודתם.' },
-  { id:15, name:'ארנון',  sub:'מנהל קומת השירות',      need:'שדה ראייה רחב, קשר עין עם צוות, שליטה עדינה',     quote:'אני כאן כדי לתת תמיכה לצוות ולפתור בעיות במהירות', img:'DATA/persona15.jpg', desc:'ארנון נדרש לנהל אולם שירות גדול, לנווט בין אנשים ולשחרר עומסים. חייב לראות את כל המתרחש ברגישות ובלי לשדר "שוטר".' },
-  { id:16, name:'שירלי',  sub:'הפעילה הקהילתית',       need:'אולם רב-תכליתי, ריהוט גמיש, חיים לאחר שעות הפעילות', quote:'המקום הזה יכול להיות סלון עירוני בערב',          img:'DATA/persona16.jpg', desc:'שירלי רואה במבנה העירייה נכס ציבורי. היא דורשת שהאולם ימשיך לפעול לאחר שעות קבלת הקהל.' },
-  { id:17, name:'רעות',   sub:'נותנת השירות',          need:'סביבה פתוחה, ישיבה לצד התושבים, שיחה ללא מחסומים', quote:'אני לא רוצה להרגיש מנותקת מאחורי דלפק',          img:'DATA/persona17.jpg', desc:'רעות עובדת קשה ומתמודדת עם עומס יומיומי. ישיבה מאחורי חלון זכוכית גורמת לה להרגיש מרוחקת מהתושבים.' },
-  { id:18, name:'ד"ר כהן', sub:'פעיל סביבתי',         need:'מבנה ירוק, חומרים מקומיים, צמחייה ואנרגיה נקייה',  quote:'המבנה של כולנו חייב להוכיח שאנחנו שומרים על הטבע', img:'DATA/persona18.jpg', desc:'ד"ר כהן מטריד משבר האקלים במיוחד בסביבה המדברית של אילת. הוא בוחן אם המבנה חוסך בחשמל ולא מזהם את המפרץ.' },
+  { id:1,  name:'ליאת',   sub:'האמא',                  need:'סביבה שקטה, קרירה ומרגיעה, שילוט ברור',           quote:'אני חייבת לדעת מראש לאן בדיוק להגיע מהרגע הראשון', img:'DATA/persona1.jpg', detailImg:'DATA/persona1_detail.jpg', desc:'ליאת מגיעה לבניין העירייה אחרי הליכה מתישה בשיא החום, דוחפת עגלה ומרגיעה תינוק שבוכה. היא עמוסה ומוסחת. הדבר האחרון שיש לה סבלנות אליו הוא לחפש דרך.' },
+  { id:2,  name:'דן',     sub:'היזם',                  need:'התנהלות יעילה ומהירה, חלל שמתפקד כמו טרקלין עסקים', quote:'חייב לנצל את זמן ההמתנה לטובת זמן עבודה',         img:'DATA/persona2.jpg', detailImg:'DATA/persona2_detail.jpg', desc:'דן מנהל עסק פעיל באילת ועבורו כל דקה שווה כסף. כל שנייה של המתנה נתפסת כזמן מבוזבז. הוא ממשיך לעבוד מהנייד גם כשנמצא בתוך המבנה.' },
+  { id:3,  name:'אתי',    sub:'בעלת עסק',              need:'מסלול מהיר לבעלי עסקים, טיפול קצר וממוקד',        quote:'העונה מתחילה, אין לי זמן מיותר לבזבז על אישורים',  img:'DATA/persona3.jpg', detailImg:'DATA/persona3_detail.jpg', desc:'כלכלת העסק של אתי נשענת על עונות התיירות. היא מגיעה לפני פתיחת העונה בידיעה שכל עיכוב בירוקרטי פוגע ישירות בפרנסה.' },
+  { id:4,  name:'רועי',   sub:'הסטודנט',               need:'מענה אוטומטי וזריז דרך הנייד, ללא המתנה לפקיד',   quote:'שהמערכת תבדוק לי בשנייה אם אני זכאי למלגה',       img:'DATA/persona4.jpg', detailImg:'DATA/persona4_detail.jpg', desc:'רועי לומד ועובד במלצרות כדי לממן את עצמו. הזמן שלו קצוב. הוא מחפש לשלוף מידע דרך הנייד בלי לעמוד בתורים.' },
+  { id:5,  name:'דוד',    sub:'הגמלאי',                need:'יחס אישי וחם, שירות ללא תלות בטכנולוגיה',         quote:'אני רוצה לדבר עם בן אדם, לא עם מסך',              img:'DATA/persona5.jpg', detailImg:'DATA/persona5_detail.jpg', desc:'דוד שייך לדור הוותיק ולא מסתדר עם מסכים ועמדות שירות עצמי. הוא מחפש לראות פנים מוכרות שיושב מולו, יקשיב ויעזור.' },
+  { id:6,  name:'אבי',    sub:'תושב העיר',             need:'שקיפות, הוגנות ואווירה שמרגיעה מתחים',            quote:'נמאס לי מסחבת, הכל מרגיש כל כך איטי',             img:'DATA/persona6.jpg', detailImg:'DATA/persona6_detail.jpg', desc:'אבי מגיע כבר חסר סבלנות, חושש להיתקע בבירוקרטיה ארוכה. הוא דרוך ומתגונן, מצפה לקושי ולעיכובים.' },
+  { id:7,  name:'דניאל',  sub:'עולה חדש',              need:'הכוונה חזותית בצבעים וסמלים, ללא תלות בשפה',      quote:'אני לא מבין את השילוט ומתבייש לבקש עזרה',         img:'DATA/persona7.jpg', detailImg:'DATA/persona7_detail.jpg', desc:'דניאל עלה לאחרונה מצרפת. קשה לו לקרוא עברית. כשנכנס למבנה רשמי הוא מרגיש מבולבל ותלוש.' },
+  { id:8,  name:'קלואי',  sub:'תושבת חדשה',            need:'תחושת שייכות, חיבור לסיפור ולגאווה של העיר',      quote:'אני רוצה להרגיש שייכת לעיר',                       img:'DATA/persona8.jpg', detailImg:'DATA/persona8_detail.jpg', desc:'קלואי עברה לאילת לפני זמן קצר ומחפשת למצוא את מקומה. כשמגיעה לעירייה, היא זקוקה לאווירה חמה שתפיג תחושת זרות.' },
+  { id:9,  name:'נועם',   sub:'נגישות לכולם',          need:'נגישות מלאה, עצמאות מוחלטת, שוויון',              quote:'אני צריך שהמרחב יראה אותי בטבעיות',                img:'DATA/persona9.jpg', detailImg:'DATA/persona9_detail.jpg', desc:'נועם מתנייד בכיסא גלגלים. חשוב לו מאוד להסתובב בעצמאות מוחלטת, להגיע לכל עמדה ולנוע מבלי להיות תלוי באחרים.' },
+  { id:10, name:'עומר',   sub:'רגישות חושית',          need:'פינות שקטות וסגורות, תאורה עדינה, עיצוב מרגיע',   quote:'האורות החזקים והרעש פה לא נעימים לי',              img:'DATA/persona10.jpg', detailImg:'DATA/persona10_detail.jpg', desc:'עומר רגיש מאוד להצפה חושית. עומס גירויים, רעש ואור חזק גורמים לו למועקה פיזית, חרדה ורצון לברוח.' },
+  { id:11, name:'יעל',    sub:'שירות אנושי',           need:'אזור סטרילי ממעקב טכנולוגי, פרטיות, יחס אנושי',   quote:'אני לא מסכימה שיסרקו אותי, באתי לקבל יחס מבני אדם', img:'DATA/persona11.jpg', detailImg:'DATA/persona11_detail.jpg', desc:'יעל שומרת בקנאות על פרטיותה. היא מסרבת שמצלמות יסרקו אותה, מתנגדת למעקב דיגיטלי ודורשת טיפול רק מבני אדם.' },
+  { id:12, name:'חן',     sub:'הדור הדיגיטלי',         need:'שירות שמתחבר לנייד, פעולה זריזה, עיצוב חדשני',    quote:'למה הייתי צריכה להגיע פיזית? הכל יכול להתבצע מהנייד', img:'DATA/persona12.jpg', detailImg:'DATA/persona12_detail.jpg', desc:'חן רגילה לנהל את כל חייה דרך הטלפון. הגעה פיזית לעירייה נתפסת בעיניה כטרחה מיותרת.' },
+  { id:13, name:'מאיה',   sub:'דור העתיד',             need:'מקום פתוח ויצירתי, כלים עתידניים, עשייה משותפת',  quote:'באתי לעצב את מתחם הנוער שלנו בתלת מימד',          img:'DATA/persona13.jpg', detailImg:'DATA/persona13_detail.jpg', desc:'מאיה נולדה לעולם של מסכים מתקדמים. היא לא מגיעה לעמוד בתור, אלא להשפיע, ליזום ולהרים פרויקטים לנוער.' },
+  { id:14, name:'אלי',    sub:'מנהל התחזוקה',          need:'חומרים עמידים, ריהוט קל לניוד, גישה נוחה לתחזוקה', quote:'האבק המדברי נכנס לכל מקום, חייבים לנקות בקלות',  img:'DATA/persona14.jpg', detailImg:'DATA/persona14_detail.jpg', desc:'אלי והצוות שלו נאבקים יום יום בחול המדברי ובלכלוך. עיצוב מסורבל עם פינות נסתרות מקשה מאוד על עבודתם.' },
+  { id:15, name:'ארנון',  sub:'מנהל קומת השירות',      need:'שדה ראייה רחב, קשר עין עם צוות, שליטה עדינה',     quote:'אני כאן כדי לתת תמיכה לצוות ולפתור בעיות במהירות', img:'DATA/persona15.jpg', detailImg:'DATA/persona15_detail.jpg', desc:'ארנון נדרש לנהל אולם שירות גדול, לנווט בין אנשים ולשחרר עומסים. חייב לראות את כל המתרחש ברגישות ובלי לשדר "שוטר".' },
+  { id:16, name:'שירלי',  sub:'הפעילה הקהילתית',       need:'אולם רב-תכליתי, ריהוט גמיש, חיים לאחר שעות הפעילות', quote:'המקום הזה יכול להיות סלון עירוני בערב',          img:'DATA/persona16.jpg', detailImg:'DATA/persona16_detail.jpg', desc:'שירלי רואה במבנה העירייה נכס ציבורי. היא דורשת שהאולם ימשיך לפעול לאחר שעות קבלת הקהל.' },
+  { id:17, name:'רעות',   sub:'נותנת השירות',          need:'סביבה פתוחה, ישיבה לצד התושבים, שיחה ללא מחסומים', quote:'אני לא רוצה להרגיש מנותקת מאחורי דלפק',          img:'DATA/persona17.jpg', detailImg:'DATA/persona17_detail.jpg', desc:'רעות עובדת קשה ומתמודדת עם עומס יומיומי. ישיבה מאחורי חלון זכוכית גורמת לה להרגיש מרוחקת מהתושבים.' },
+  { id:18, name:'ד"ר כהן', sub:'פעיל סביבתי',         need:'מבנה ירוק, חומרים מקומיים, צמחייה ואנרגיה נקייה',  quote:'המבנה של כולנו חייב להוכיח שאנחנו שומרים על הטבע', img:'DATA/persona18.jpg', detailImg:'DATA/persona18_detail.jpg', desc:'ד"ר כהן מטריד משבר האקלים במיוחד בסביבה המדברית של אילת. הוא בוחן אם המבנה חוסך בחשמל ולא מזהם את המפרץ.' },
 ];
 
 const SCENARIOS = [
@@ -600,9 +623,17 @@ function renderDetail(type) {
   if (!item) return;
 
   const isPersona = type === 'persona';
+  
+  let imgHtml = '';
+  if (isPersona) {
+    imgHtml = `<img class="detail-hero-img persona-detail-img" src="${item.detailImg || item.img}" alt="${item.name}">`;
+  } else {
+    imgHtml = `<img class="detail-hero-img scenario-detail-img" src="${item.img}" alt="${item.name}">`;
+  }
+
   const html = `
     <div class="detail-hero">
-      <img src="${item.img}" alt="${item.name}">
+      ${imgHtml}
       <div class="detail-hero-overlay">
         <div class="detail-hero-name">${item.name}</div>
         <div class="detail-hero-sub">${isPersona ? item.sub : 'תרחיש ' + item.id}</div>
@@ -682,7 +713,6 @@ async function startRecording() {
     state.mediaRecorder = new MediaRecorder(stream);
     state.mediaRecorder.ondataavailable = e => state.audioChunks.push(e.data);
     state.mediaRecorder.onstop = () => {
-      // התיקון הקריטי לאייפון
       state.audioBlob = new Blob(state.audioChunks, { type: state.mediaRecorder.mimeType || 'audio/webm' });
       const url = URL.createObjectURL(state.audioBlob);
       document.getElementById('audio-player').src = url;
@@ -765,7 +795,6 @@ function removePhoto() {
   document.getElementById('photo-preview').style.display = 'none';
 }
 
-// פונקציית העזר לשמירת קובץ השמע
 function blobToBase64(blob) {
   return new Promise((resolve, _) => {
     const reader = new FileReader();
