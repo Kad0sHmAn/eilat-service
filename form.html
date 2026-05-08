@@ -725,7 +725,7 @@ async function startRecording() {
     state.mediaRecorder = new MediaRecorder(stream);
     state.mediaRecorder.ondataavailable = e => state.audioChunks.push(e.data);
     state.mediaRecorder.onstop = () => {
-      state.audioBlob = new Blob(state.audioChunks, { type: 'audio/webm' });
+      state.audioBlob = new Blob(state.audioChunks, { type: state.mediaRecorder.mimeType || 'audio/webm' });
       const url = URL.createObjectURL(state.audioBlob);
       document.getElementById('audio-player').src = url;
       document.getElementById('audio-playback').style.display = 'block';
