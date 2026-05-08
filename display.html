@@ -6,7 +6,6 @@
     <title>לוח רעיונות - תצוגת בועות זכוכית 2035</title>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        /* פלטת הצבעים הרשמית */
         :root {
             --navy: #113344;
             --blue: #27336F;
@@ -36,7 +35,6 @@
             text-shadow: 0 4px 15px rgba(255, 255, 255, 0.9);
         }
 
-        /* עיצוב כדורי הזכוכית */
         .bubble {
             width: 280px; 
             height: 280px; 
@@ -61,7 +59,6 @@
             overflow: hidden; 
         }
 
-        /* אפקט הילה פנימי עדין */
         .bubble::after {
             content: '';
             position: absolute;
@@ -72,11 +69,7 @@
         }
 
         @media (max-width: 768px) {
-            .bubble { 
-                width: 180px; 
-                height: 180px; 
-                padding: 15px; 
-            }
+            .bubble { width: 180px; height: 180px; padding: 15px; }
             .bubble-tags { display: none; }
             h1 { font-size: 1.5em; }
         }
@@ -118,9 +111,7 @@
             box-shadow: 0 4px 12px rgba(17, 51, 68, 0.15);
         }
 
-        .fade-out { 
-            opacity: 0 !important; 
-        }
+        .fade-out { opacity: 0 !important; }
 
         .new-tag {
             position: absolute;
@@ -172,7 +163,6 @@
         
         const getBubbleSize = () => window.innerWidth <= 768 ? 180 : 280;
         
-        // פונקציה לייצור מהירות אקראית וגבוהה יותר עם כיוון התחלתי מתחלף
         function getFastSpeed() {
             const speed = (Math.random() * 1) + 0.8; 
             return Math.random() > 0.5 ? speed : -speed;
@@ -210,15 +200,25 @@
         }
         animate();
 
+        // הפונקציה שמעודכנת לסנן הקלטות
         async function fetchIdeas() {
             try {
                 const snap = await getDocs(collection(db, "solutions"));
                 allIdeas = []; 
-                snap.forEach(d => allIdeas.push(d.data()));
+                snap.forEach(d => {
+                    const data = d.data();
+                    
+                    // בודק אם זו הקלטה חדשה או הקלטה ישנה שנשמרה בטעות כטקסט
+                    const isLegacyAudioText = typeof data.solution === 'string' && data.solution.includes("המשתמש הקליט הודעה קולית");
+                    
+                    // מכניס לכדור רק אם זה לא אודיו ולא הודעת מערכת ישנה
+                    if (data.type !== 'audio' && !isLegacyAudioText) {
+                        allIdeas.push(data);
+                    }
+                });
                 if (allIdeas.length > 0) updateBubbles();
             } catch (e) { console.error(e); }
         }
-
         function updateBubbles() {
             if (allIdeas.length === 0) return;
             

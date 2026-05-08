@@ -11,7 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   
   <style>
-    /* פלטת צבעי הליבה - כפי שהגדרת בדיוק */
     :root {
       --navy: #113344;
       --blue: #27336F;
@@ -42,7 +41,6 @@
     .screen.active { display: flex; animation: fadeIn 0.3s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ===== HEADER ===== */
     .app-header {
       background: var(--navy);
       color: white;
@@ -70,7 +68,6 @@
     }
     .back-btn:active { background: rgba(255,255,255,0.3); }
 
-    /* ===== PROGRESS BAR ===== */
     .progress-bar {
       background: var(--navy);
       padding: 0 20px 12px;
@@ -88,7 +85,6 @@
     .progress-step.done { background: var(--turquoise); }
     .progress-step.active { background: var(--yellow); }
 
-    /* ===== WELCOME SCREEN ===== */
     #screen-welcome {
       background: linear-gradient(160deg, var(--navy) 0%, var(--blue) 80%, #113344 100%);
       color: white;
@@ -142,15 +138,11 @@
     }
     .btn-primary:active { transform: scale(0.95); }
 
-    /* ===== CARD GRID ===== */
     .grid-container { flex: 1; padding: 20px 16px; overflow-y: auto; padding-bottom: 40px; }
     .grid-title { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 4px; padding: 0 4px; }
     .grid-subtitle { font-size: 13px; color: var(--gray-blue); margin-bottom: 16px; padding: 0 4px; }
     
-    /* חזרה ל-3 תמונות בשורה בנייד! */
     .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    
-    /* תצוגה מורחבת למחשב - 5 בשורה כדי שלא יהיו ענקיות */
     @media (min-width: 768px) { .card-grid { grid-template-columns: repeat(5, 1fr); gap: 15px; } }
     @media (min-width: 1024px) { .card-grid { grid-template-columns: repeat(6, 1fr); gap: 20px; } }
     
@@ -168,27 +160,25 @@
     .card:active { transform: scale(0.96); }
     .card.selected { border-color: var(--coral); box-shadow: 0 8px 25px rgba(187, 128, 28, 0.3); }
     
-    /* מונע חיתוך תמונות (object-fit: contain) */
     .card-img-wrapper {
         width: 100%;
-        aspect-ratio: 1; /* שומר על פרופורציה ריבועית לא משנה מה גודל המסך */
+        aspect-ratio: 1; 
         background: var(--white);
         display: flex;
         align-items: center;
         justify-content: center;
         border-bottom: 1px solid #f1f5f9;
-        padding: 5px; /* מרווח פנימי קל */
+        padding: 5px; 
     }
     .card-img-wrapper img { 
         width: 100%; 
         height: 100%; 
-        object-fit: contain; /* מציג את כל התמונה מבלי לחתוך שום דבר */
+        object-fit: contain; 
     }
     
     .card-label { padding: 8px 4px; font-size: 12px; font-weight: 800; color: var(--navy); text-align: center; line-height: 1.2; background: white; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;}
     .card-label .card-subtitle { color: var(--gray-blue); font-weight: 600; font-size: 10px; display: block; margin-top: 3px;}
 
-    /* ===== DETAIL SCREEN ===== */
     .detail-container { flex: 1; overflow-y: auto; padding: 0 0 120px; }
     .detail-hero { position: relative; width: 100%; background: var(--white); text-align: center; padding-top: 20px;}
     .detail-hero img { width: 100%; max-width: 400px; max-height: 350px; object-fit: contain; display: inline-block;}
@@ -209,7 +199,6 @@
     .btn-full { width: 100%; background: var(--turquoise); color: var(--navy); border: none; padding: 16px; border-radius: var(--radius); font-size: 16px; font-weight: 800; cursor: pointer; transition: transform 0.1s; font-family: inherit;}
     .btn-full:active { transform: scale(0.98); }
 
-    /* ===== INPUT SCREEN ===== */
     .selected-summary { background: linear-gradient(135deg, var(--navy), var(--blue)); padding: 16px; display: flex; gap: 10px; align-items: center; }
     .summary-card { flex: 1; background: rgba(255,255,255,0.1); border: 1px solid rgba(129,198,221,0.2); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 10px; }
     .summary-card img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--turquoise); background: white;}
@@ -229,12 +218,10 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; animation: fadeIn 0.3s; }
     
-    /* Text input */
     .idea-textarea { width: 100%; min-height: 160px; border: 2px solid white; border-radius: var(--radius); padding: 16px; font-size: 16px; line-height: 1.6; color: var(--navy); background: white; resize: none; font-family: inherit; box-shadow: var(--shadow); transition: border-color 0.2s; }
     .idea-textarea:focus { outline: none; border-color: var(--turquoise); }
     .char-count { text-align: left; font-size: 12px; color: var(--gray-blue); margin-top: 8px; font-weight: 600;}
     
-    /* Audio input */
     .audio-zone { background: white; border-radius: var(--radius); padding: 30px 20px; text-align: center; border: 2px dashed rgba(77, 100, 117, 0.3); box-shadow: var(--shadow); }
     .record-btn { width: 90px; height: 90px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 36px; background: var(--turquoise); box-shadow: 0 8px 25px rgba(20,184,212,0.4); }
     .record-btn.recording { background: #e53e3e; box-shadow: 0 8px 25px rgba(229,62,62,0.4); animation: pulse 1s infinite alternate; }
@@ -245,7 +232,6 @@
     .audio-playback audio { width: 100%; height: 40px;}
     .audio-redo { margin-top: 10px; font-size: 14px; color: var(--coral); cursor: pointer; font-weight: 700; }
     
-    /* Photo input */
     .photo-zone { background: white; border-radius: var(--radius); border: 2px dashed rgba(77, 100, 117, 0.3); overflow: hidden; box-shadow: var(--shadow); }
     .photo-placeholder { padding: 40px 20px; text-align: center; }
     .photo-placeholder .photo-icon { font-size: 50px; margin-bottom: 15px; display: block; }
@@ -256,24 +242,20 @@
     .photo-preview-actions { position: absolute; top: 15px; left: 15px; display: flex; gap: 10px; }
     .photo-action-btn { background: rgba(17,51,68,0.8); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; backdrop-filter: blur(5px);}
     
-    /* Name field */
     .name-field { margin-top: 20px; background: white; border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
     .name-label { font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 10px; }
     .name-input { width: 100%; border: 2px solid #e0eaf0; border-radius: 10px; padding: 12px 14px; font-size: 15px; color: var(--navy); background: var(--bg); font-family: inherit; direction: rtl; transition: 0.2s;}
     .name-input:focus { outline: none; border-color: var(--turquoise); background: white;}
     
-    /* Submit footer */
     .submit-footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 16px 20px; padding-bottom: calc(16px + env(safe-area-inset-bottom)); background: white; border-top: 1px solid rgba(0,0,0,0.05); box-shadow: 0 -10px 20px rgba(17,51,68,0.05); z-index: 50;}
     .btn-submit { width: 100%; background: var(--blue); color: white; border: none; padding: 16px; border-radius: var(--radius); font-size: 18px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: inherit; box-shadow: 0 4px 15px rgba(39, 51, 111, 0.3);}
     .btn-submit:active { transform: scale(0.98); }
 
-    /* ===== SUBMITTING ===== */
     #screen-submitting { justify-content: center; align-items: center; background: var(--bg); }
     .spinner { width: 70px; height: 70px; border: 5px solid rgba(20,184,212,0.2); border-top-color: var(--turquoise); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 25px; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .submitting-text { font-size: 18px; color: var(--navy); font-weight: 800; }
 
-    /* ===== SUCCESS SCREEN ===== */
     #screen-success { justify-content: center; align-items: center; text-align: center; padding: 40px 30px; background: linear-gradient(160deg, var(--navy) 0%, var(--blue) 100%); }
     .success-icon { font-size: 80px; margin-bottom: 20px; animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
@@ -282,7 +264,6 @@
     .btn-again { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); color: white; padding: 16px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 15px; width: 100%; max-width: 300px; font-family: inherit;}
     .btn-again.primary-again { background: var(--turquoise); border-color: transparent; color: var(--navy); box-shadow: 0 6px 20px rgba(20,184,212,0.3); }
 
-    /* ===== ERROR TOAST ===== */
     .toast { position: fixed; bottom: 100px; left: 20px; right: 20px; background: #e53e3e; color: white; padding: 14px 20px; border-radius: 12px; font-size: 14px; font-weight: 700; text-align: center; z-index: 1000; opacity: 0; transform: translateY(20px); transition: 0.3s; pointer-events: none; box-shadow: 0 4px 15px rgba(229,62,62,0.4);}
     .toast.show { opacity: 1; transform: translateY(0); }
 
@@ -512,9 +493,6 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-//  DATA 
-// ============================================================
 const PERSONAS = [
   { id:1,  name:'ליאת',   sub:'האמא',                  need:'סביבה שקטה, קרירה ומרגיעה, שילוט ברור',           quote:'אני חייבת לדעת מראש לאן בדיוק להגיע מהרגע הראשון', img:'DATA/persona1.jpg', desc:'ליאת מגיעה לבניין העירייה אחרי הליכה מתישה בשיא החום, דוחפת עגלה ומרגיעה תינוק שבוכה. היא עמוסה ומוסחת. הדבר האחרון שיש לה סבלנות אליו הוא לחפש דרך.' },
   { id:2,  name:'דן',     sub:'היזם',                  need:'התנהלות יעילה ומהירה, חלל שמתפקד כמו טרקלין עסקים', quote:'חייב לנצל את זמן ההמתנה לטובת זמן עבודה',         img:'DATA/persona2.jpg', desc:'דן מנהל עסק פעיל באילת ועבורו כל דקה שווה כסף. כל שנייה של המתנה נתפסת כזמן מבוזבז. הוא ממשיך לעבוד מהנייד גם כשנמצא בתוך המבנה.' },
@@ -557,9 +535,6 @@ const SCENARIOS = [
   { id:18, name:'משוב דרך צבע ומפת רגש',         img:'DATA/scenario18.jpg', desc:'בסיום השירות, התושב בוחר אובייקט בצבע שמייצג את תחושתו. לאורך היום נוצרת מפת רגש חיה המשקפת את חווית השירות.' },
 ];
 
-// ============================================================
-//  STATE
-// ============================================================
 let state = {
   persona: null,
   scenario: null,
@@ -572,9 +547,6 @@ let state = {
   audioChunks: [],
 };
 
-// ============================================================
-//  NAVIGATION
-// ============================================================
 function goTo(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + screen).classList.add('active');
@@ -587,9 +559,6 @@ function goTo(screen) {
   if (screen === 'input') renderInputSummary();
 }
 
-// ============================================================
-//  GRIDS
-// ============================================================
 function renderPersonaGrid() {
   const grid = document.getElementById('persona-grid');
   grid.innerHTML = PERSONAS.map(p => `
@@ -626,9 +595,6 @@ function selectScenario(id) {
   goTo('scenarioDetail');
 }
 
-// ============================================================
-//  DETAIL VIEWS
-// ============================================================
 function renderDetail(type) {
   const item = type === 'persona' ? state.persona : state.scenario;
   if (!item) return;
@@ -662,9 +628,6 @@ function renderDetail(type) {
   document.getElementById(type + '-detail-content').innerHTML = html;
 }
 
-// ============================================================
-//  INPUT SUMMARY
-// ============================================================
 function renderInputSummary() {
   const p = state.persona;
   const s = state.scenario;
@@ -689,9 +652,6 @@ function renderInputSummary() {
   `;
 }
 
-// ============================================================
-//  TABS
-// ============================================================
 function switchTab(tab) {
   state.inputMode = tab;
   document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
@@ -705,9 +665,6 @@ function updateCharCount() {
   document.getElementById('char-count').textContent = val;
 }
 
-// ============================================================
-//  AUDIO RECORDING
-// ============================================================
 let recordInterval = null;
 
 async function toggleRecording() {
@@ -725,6 +682,7 @@ async function startRecording() {
     state.mediaRecorder = new MediaRecorder(stream);
     state.mediaRecorder.ondataavailable = e => state.audioChunks.push(e.data);
     state.mediaRecorder.onstop = () => {
+      // התיקון הקריטי לאייפון
       state.audioBlob = new Blob(state.audioChunks, { type: state.mediaRecorder.mimeType || 'audio/webm' });
       const url = URL.createObjectURL(state.audioBlob);
       document.getElementById('audio-player').src = url;
@@ -771,9 +729,6 @@ function resetAudio() {
   document.getElementById('record-btn').innerHTML = '🎙️';
 }
 
-// ============================================================
-//  PHOTO
-// ============================================================
 function openCamera() {
   document.getElementById('camera-input').click();
 }
@@ -810,9 +765,15 @@ function removePhoto() {
   document.getElementById('photo-preview').style.display = 'none';
 }
 
-// ============================================================
-//  SUBMIT 
-// ============================================================
+// פונקציית העזר לשמירת קובץ השמע
+function blobToBase64(blob) {
+  return new Promise((resolve, _) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
+}
+
 async function submitIdea() {
   const text = document.getElementById('idea-text').value.trim();
   const hasAudio = !!state.audioBlob;
@@ -840,8 +801,8 @@ async function submitIdea() {
     payload.type = 'image';
     payload.image = state.photoDataUrl;
   } else if (state.inputMode === 'audio') {
-    payload.type = 'text'; 
-    payload.solution = "🎙️ המשתמש הקליט הודעה קולית (נשמר במערכת הניהול)";
+    payload.type = 'audio'; 
+    payload.audio = await blobToBase64(state.audioBlob); 
   }
 
   try {
@@ -869,9 +830,6 @@ function startNewRound() {
   goTo('selectPersona');
 }
 
-// ============================================================
-//  TOAST
-// ============================================================
 let toastTimer = null;
 function showToast(msg) {
   const t = document.getElementById('toast');
