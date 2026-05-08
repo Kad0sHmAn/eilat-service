@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פורטל סדנת אילת 2035</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            background-image: linear-gradient(135deg, #f4f7f6 0%, #e2e8f0 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 30px;
+            padding: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 900px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            width: 280px;
+            padding: 40px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-color: #38bdf8;
+        }
+
+        .card-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #0f172a;
+        }
+
+        .card-desc {
+            font-size: 1em;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        /* התאמה למסכים קטנים (טלפונים) */
+        @media (max-width: 600px) {
+            .cards-container {
+                gap: 20px;
+            }
+            .card {
+                width: 100%;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>ברוכים הבאים לסדנת השירות</h1>
+        <p>אילת 2035 - מעצבים את העתיד יחד</p>
+    </div>
+
+    <div class="cards-container">
+        <a href="form.html" class="card">
+            <div class="card-icon">📱</div>
+            <div class="card-title">כניסה למשתתפים</div>
+            <div class="card-desc">לחצו כאן כדי לבחור פרסונה ותרחיש ולהזין את הרעיונות שלכם מהטלפון.</div>
+        </a>
+
+        <a href="display.html" class="card">
+            <div class="card-icon">🖥️</div>
+            <div class="card-title">מסך תצוגה ראשי</div>
+            <div class="card-desc">לחצו כאן להקרנת הרעיונות בזמן אמת על גבי מסך גדול או מקרן.</div>
+        </a>
+    </div>
+
+</body>
+</html>
