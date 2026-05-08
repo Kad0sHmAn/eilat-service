@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>סדנת חווית שירות - עיריית אילת</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .selection-container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #34495e;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f8fafc;
+            box-sizing: border-box;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 250px; 
+            background-color: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 8px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 14px;
+            overflow: hidden;
+            box-sizing: border-box; 
+            padding: 10px; 
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; 
+            display: none; 
+        }
+
+        .solution-area {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: none;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            resize: none;
+            font-family: inherit;
+            font-size: 16px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>מעצבים חווית שירות - 2035</h2>
+
+    <div class="selection-container">
+        <div class="input-group">
+            <label for="personaSelect">1. בחר/י פרסונה:</label>
+            <select id="personaSelect">
+                <option value="">-- בחירה --</option>
+                <option value="1">ליאת (האמא)</option>
+                <option value="2">דן (היזם)</option>
+                <option value="3">אתי (בעלת העסק)</option>
+                <option value="4">רועי (הסטודנט)</option>
+                <option value="5">דוד (הגמלאי)</option>
+                <option value="6">אבי (תושב העיר)</option>
+                <option value="7">דניאל (העולה החדש)</option>
+                <option value="8">קלואי (התושבת החדשה)</option>
+                <option value="9">נועם (הנגישות לכולם)</option>
+                <option value="10">עומר (נער בעל רגישות חושית)</option>
+                <option value="11">יעל (שירות אנושי של פעם)</option>
+                <option value="12">חן (הדור הדיגיטלי)</option>
+                <option value="13">מאיה (צעירת דור העתיד)</option>
+                <option value="14">אלי (מנהל התחזוקה)</option>
+                <option value="15">ארנון (מנהל קומת השירות)</option>
+                <option value="16">שירלי (הפעילה הקהילתית)</option>
+                <option value="17">רעות (נותנת השירות)</option>
+                <option value="18">ד"ר כהן (פעיל הסביבה)</option>
+            </select>
+            <div class="image-preview">
+                <span id="personaPlaceholder">תמונת הפרסונה תופיע כאן</span>
+                <img id="personaImg" src="" alt="פרסונה">
+            </div>
+        </div>
+    </div>
+
+    <div class="selection-container">
+        <div class="input-group">
+            <label for="scenarioSelect">2. בחר/י תרחיש עתידי:</label>
+            <select id="scenarioSelect">
+                <option value="">-- בחירה --</option>
+                <option value="1">חצר אקלימית</option>
+                <option value="2">חזית חכמה שמרגיעה את הנפש</option>
+                <option value="3">המעבר המרגיע</option>
+                <option value="4">נווה מדבר שקט ורגוע</option>
+                <option value="5">קבלת פנים חכמה ואישית</option>
+                <option value="6">עוזרים אישיים חכמים</option>
+                <option value="7">שולחן הקפה החכם</option>
+                <option value="8">כיכר התנועה של השירות</option>
+                <option value="9">אזור שירות נקי ממסכים</option>
+                <option value="10">שקיפות מלאה במרחב</option>
+                <option value="11">מיצג האנרגיה הסולארית</option>
+                <option value="12">קירות שמספרים סיפור</option>
+                <option value="13">בועת פרטיות בחלל פתוח</option>
+                <option value="14">שולחנות תכנון משותפים</option>
+                <option value="15">שירות עד הבית מהאוויר</option>
+                <option value="16">הסלון העירוני בערב</option>
+                <option value="17">יציאה מכבדת לרחוב</option>
+                <option value="18">משוב דרך צבע ומפת רגש</option>
+            </select>
+            <div class="image-preview">
+                <span id="scenarioPlaceholder">תמונת התרחיש תופיע כאן</span>
+                <img id="scenarioImg" src="" alt="תרחיש">
+            </div>
+        </div>
+    </div>
+
+    <div class="solution-area" id="solutionArea">
+        <label>הצעת הפתרון שלך:</label>
+        <textarea id="solutionText" placeholder="הקלד/י כאן את הרעיון או הפתרון..."></textarea>
+        <button id="submitBtn">שלח/י רעיון</button>
+    </div>
+
+    <script type="module">
+        // ייבוא פונקציות מ-Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // המפתחות שלך ל-Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAcVlqfO_v4HGj7KC8-wPyC7EgWOmuyJ7A",
+            authDomain: "eilat-service-2035.firebaseapp.com",
+            projectId: "eilat-service-2035",
+            storageBucket: "eilat-service-2035.firebasestorage.app",
+            messagingSenderId: "12177419107",
+            appId: "1:12177419107:web:70e353e46294af5ef30156"
+        };
+
+        // אתחול המסד
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const personaSelect = document.getElementById('personaSelect');
+        const scenarioSelect = document.getElementById('scenarioSelect');
+        const personaImg = document.getElementById('personaImg');
+        const scenarioImg = document.getElementById('scenarioImg');
+        const personaPlaceholder = document.getElementById('personaPlaceholder');
+        const scenarioPlaceholder = document.getElementById('scenarioPlaceholder');
+        const solutionArea = document.getElementById('solutionArea');
+        const solutionText = document.getElementById('solutionText');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function checkSelections() {
+            if (personaSelect.value !== "" && scenarioSelect.value !== "") {
+                solutionArea.style.display = 'block';
+                setTimeout(() => {
+                    solutionArea.scrollIntoView({ behavior: 'smooth' });
+                }, 200);
+            } else {
+                solutionArea.style.display = 'none';
+            }
+        }
+
+        personaSelect.addEventListener('change', function() {
+            if (this.value) {
+                personaImg.src = 'DATA/persona' + this.value + '.jpg';
+                personaImg.style.display = 'block';
+                personaPlaceholder.style.display = 'none';
+            } else {
+                personaImg.style.display = 'none';
+                personaPlaceholder.style.display = 'block';
+            }
+            checkSelections();
+        });
+
+        scenarioSelect.addEventListener('change', function() {
+            if (this.value) {
+                scenarioImg.src = 'DATA/scenario' + this.value + '.jpg';
+                scenarioImg.style.display = 'block';
+                scenarioPlaceholder.style.display = 'none';
+            } else {
+                scenarioImg.style.display = 'none';
+                scenarioPlaceholder.style.display = 'block';
+            }
+            checkSelections();
+        });
+
+        // פונקציית השליחה לענן
+        submitBtn.addEventListener('click', async function() {
+            if (solutionText.value.trim() === "") {
+                alert("אנא הקלד/י רעיון או פתרון לפני השליחה.");
+                return;
+            }
+
+            // לקיחת השמות המלאים (ולא רק המספרים) מהתפריטים
+            const personaName = personaSelect.options[personaSelect.selectedIndex].text;
+            const scenarioName = scenarioSelect.options[scenarioSelect.selectedIndex].text;
+
+            try {
+                // שינוי מצב הכפתור בזמן השליחה
+                submitBtn.innerText = 'שולח...';
+                submitBtn.disabled = true;
+
+                // כתיבה לתוך מסד הנתונים בענן בטבלה שנקראת solutions
+                await addDoc(collection(db, "solutions"), {
+                    persona: personaName,
+                    scenario: scenarioName,
+                    solution: solutionText.value,
+                    timestamp: serverTimestamp()
+                });
+
+                alert("הרעיון שלך נשלח בהצלחה, תודה!");
+                
+                // איפוס האפליקציה למשתמש הבא
+                solutionText.value = "";
+                personaSelect.value = "";
+                scenarioSelect.value = "";
+                
+                // עדכון התצוגה חזרה למצב התחלתי
+                personaSelect.dispatchEvent(new Event('change'));
+                scenarioSelect.dispatchEvent(new Event('change'));
+
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                alert("אירעה שגיאה בשליחה. אנא נסה/י שוב.");
+            } finally {
+                // החזרת הכפתור למצב רגיל
+                submitBtn.innerText = 'שלח/י רעיון';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
