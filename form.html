@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>תושבים מעצבים חווית שירות 2035</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* פלטת צבעי הליבה של אילת 2035 */
+    :root {
+      --navy: #113344;
+      --blue: #27336F;
+      --turquoise-light: #81C6DD;
+      --turquoise: #14B8D4;
+      --coral: #BB801C;
+      --yellow: #FAC220;
+      --bg: #E4F4F9;
+      --gray-blue: #4D6475;
+      --gray-dark: #37464B;
+      --white: #ffffff;
+      --radius: 14px;
+      --shadow: 0 4px 20px rgba(17,51,68,0.12);
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      font-family: 'Heebo', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+      min-height: 100vh;
+      direction: rtl;
+      overflow-x: hidden;
+    }
+
+    /* ===== SCREENS ===== */
+    .screen { display: none; flex-direction: column; min-height: 100vh; }
+    .screen.active { display: flex; animation: fadeIn 0.3s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== HEADER ===== */
+    .app-header {
+      background: var(--navy);
+      color: white;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.25);
+    }
+    .app-header h1 { font-size: 16px; font-weight: 700; letter-spacing: 0.3px; }
+    .app-header .subtitle { font-size: 12px; color: var(--turquoise-light); margin-top: 1px; }
+    .back-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    .back-btn:active { background: rgba(255,255,255,0.3); }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-bar {
+      background: var(--navy);
+      padding: 0 20px 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .progress-step {
+      flex: 1;
+      height: 5px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 3px;
+      transition: background 0.3s;
+    }
+    .progress-step.done { background: var(--turquoise); }
+    .progress-step.active { background: var(--yellow); }
+
+    /* ===== WELCOME SCREEN ===== */
+    #screen-welcome {
+      background: linear-gradient(160deg, var(--navy) 0%, var(--blue) 80%, #1a4a6b 100%);
+      color: white;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px 30px;
+      gap: 0;
+    }
+    .welcome-logo {
+      width: 100px; height: 100px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      border: 2px solid var(--turquoise-light);
+      box-shadow: 0 0 30px rgba(20, 184, 212, 0.2);
+    }
+    .welcome-logo svg { width: 55px; height: 55px; }
+    .welcome-year {
+      background: var(--turquoise);
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 800;
+      padding: 5px 18px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+    .welcome-title { font-size: 28px; font-weight: 800; line-height: 1.2; margin-bottom: 12px; color: white; }
+    .welcome-desc { font-size: 15px; color: var(--turquoise-light); line-height: 1.6; margin-bottom: 40px; max-width: 320px; }
+    
+    .welcome-steps { display: flex; gap: 12px; margin-bottom: 40px; width: 100%; max-width: 360px; }
+    .welcome-step { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(129,198,221,0.2); border-radius: var(--radius); padding: 15px 5px; text-align: center; }
+    .welcome-step .step-num { width: 30px; height: 30px; background: var(--turquoise); color: var(--navy); border-radius: 50%; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
+    .welcome-step .step-text { font-size: 12px; color: var(--turquoise-light); line-height: 1.3; font-weight: 600;}
+    
+    .btn-primary { 
+        background: var(--turquoise); 
+        color: var(--navy); 
+        border: none; 
+        padding: 16px 48px; 
+        border-radius: 30px; 
+        font-size: 18px; 
+        font-weight: 800; 
+        cursor: pointer; 
+        box-shadow: 0 6px 20px rgba(20,184,212,0.4); 
+        transition: transform 0.15s; 
+        font-family: inherit;
+    }
+    .btn-primary:active { transform: scale(0.95); }
+
+    /* ===== CARD GRID ===== */
+    .grid-container { flex: 1; padding: 20px 16px; overflow-y: auto; padding-bottom: 40px; }
+    .grid-title { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 4px; padding: 0 4px; }
+    .grid-subtitle { font-size: 13px; color: var(--gray-blue); margin-bottom: 16px; padding: 0 4px; }
+    
+    /* סידור חכם של הכרטיסיות - 2 בשורה בנייד, 3 במסכים גדולים */
+    .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    @media (min-width: 600px) { .card-grid { grid-template-columns: repeat(3, 1fr); } }
+    
+    .card { 
+        background: white; 
+        border-radius: var(--radius); 
+        overflow: hidden; 
+        box-shadow: var(--shadow); 
+        cursor: pointer; 
+        transition: transform 0.15s, border-color 0.2s; 
+        border: 3px solid transparent; 
+    }
+    .card:active { transform: scale(0.96); }
+    .card.selected { border-color: var(--coral); box-shadow: 0 8px 25px rgba(187, 128, 28, 0.3); }
+    
+    /* טריק לשמירה על ריבועים מושלמים (1:1) בכל גודל מסך */
+    .card-img-wrapper {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; /* הופך לריבוע מושלם */
+        background: #f1f5f9;
+        overflow: hidden;
+    }
+    .card-img-wrapper img { 
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+        object-position: center top; /* מבטיח שרואים את הפרצוף */
+    }
+    
+    .card-label { padding: 10px 8px; font-size: 13px; font-weight: 800; color: var(--navy); text-align: center; line-height: 1.2; background: white; }
+    .card-label .card-subtitle { color: var(--gray-blue); font-weight: 600; font-size: 11px; display: block; margin-top: 3px;}
+
+    /* ===== DETAIL SCREEN ===== */
+    .detail-container { flex: 1; overflow-y: auto; padding: 0 0 120px; }
+    .detail-hero { position: relative; width: 100%; background: var(--navy); }
+    .detail-hero img { width: 100%; max-height: 300px; object-fit: cover; display: block; opacity: 0.85; object-position: center top;}
+    .detail-hero-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(17,51,68,0.95)); padding: 40px 20px 16px; }
+    .detail-hero-name { color: white; font-size: 26px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .detail-hero-sub { color: var(--turquoise-light); font-size: 15px; margin-top: 2px; font-weight: 600;}
+    
+    .detail-body { padding: 20px; }
+    .detail-section { background: white; border-radius: var(--radius); padding: 18px; margin-bottom: 15px; box-shadow: var(--shadow); }
+    .detail-section-label { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--blue); margin-bottom: 8px; }
+    .detail-section-text { font-size: 15px; line-height: 1.6; color: var(--gray-dark); }
+    
+    .detail-quote { background: linear-gradient(135deg, var(--navy), var(--blue)); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; position: relative; }
+    .detail-quote::before { content: '"'; position: absolute; top: 0px; right: 15px; font-size: 60px; color: rgba(129,198,221,0.2); font-family: Georgia, serif; line-height: 1; }
+    .detail-quote-text { color: white; font-size: 16px; font-style: italic; line-height: 1.5; position: relative; z-index: 1; }
+    
+    .detail-footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 16px 20px; padding-bottom: calc(16px + env(safe-area-inset-bottom)); background: white; border-top: 1px solid rgba(0,0,0,0.05); box-shadow: 0 -10px 20px rgba(17,51,68,0.05); z-index: 50;}
+    .btn-full { width: 100%; background: var(--turquoise); color: var(--navy); border: none; padding: 16px; border-radius: var(--radius); font-size: 16px; font-weight: 800; cursor: pointer; transition: transform 0.1s; font-family: inherit;}
+    .btn-full:active { transform: scale(0.98); }
+
+    /* ===== INPUT SCREEN ===== */
+    .selected-summary { background: linear-gradient(135deg, var(--navy), var(--blue)); padding: 16px; display: flex; gap: 10px; align-items: center; }
+    .summary-card { flex: 1; background: rgba(255,255,255,0.1); border: 1px solid rgba(129,198,221,0.2); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 10px; }
+    .summary-card img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--turquoise); }
+    .summary-card-text { flex: 1; }
+    .summary-card-label { font-size: 10px; color: var(--turquoise-light); font-weight: 700; margin-bottom: 2px; }
+    .summary-card-name { font-size: 13px; color: white; font-weight: 800; line-height: 1.2; }
+    .summary-plus { color: var(--yellow); font-size: 24px; font-weight: 700; }
+    
+    .input-container { flex: 1; padding: 20px 16px; overflow-y: auto; padding-bottom: 120px; }
+    .input-title { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
+    .input-subtitle { font-size: 14px; color: var(--gray-blue); margin-bottom: 20px; line-height: 1.4;}
+    
+    .input-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .input-tab { flex: 1; padding: 12px 8px; background: white; border: 2px solid transparent; border-radius: 12px; font-size: 13px; font-weight: 700; color: var(--gray-blue); cursor: pointer; text-align: center; transition: all 0.2s; box-shadow: var(--shadow); }
+    .input-tab.active { background: var(--navy); color: white; box-shadow: 0 4px 15px rgba(17,51,68,0.2);}
+    .input-tab .tab-icon { font-size: 20px; display: block; margin-bottom: 5px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s; }
+    
+    /* Text input */
+    .idea-textarea { width: 100%; min-height: 160px; border: 2px solid white; border-radius: var(--radius); padding: 16px; font-size: 16px; line-height: 1.6; color: var(--navy); background: white; resize: none; font-family: inherit; box-shadow: var(--shadow); transition: border-color 0.2s; }
+    .idea-textarea:focus { outline: none; border-color: var(--turquoise); }
+    .char-count { text-align: left; font-size: 12px; color: var(--gray-blue); margin-top: 8px; font-weight: 600;}
+    
+    /* Audio input */
+    .audio-zone { background: white; border-radius: var(--radius); padding: 30px 20px; text-align: center; border: 2px dashed rgba(77, 100, 117, 0.3); box-shadow: var(--shadow); }
+    .record-btn { width: 90px; height: 90px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 36px; background: var(--turquoise); box-shadow: 0 8px 25px rgba(20,184,212,0.4); }
+    .record-btn.recording { background: #e53e3e; box-shadow: 0 8px 25px rgba(229,62,62,0.4); animation: pulse 1s infinite alternate; }
+    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
+    .record-status { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .record-timer { font-size: 32px; font-weight: 800; color: var(--blue); font-variant-numeric: tabular-nums; }
+    .audio-playback { margin-top: 20px; background: var(--bg); border-radius: 12px; padding: 15px; }
+    .audio-playback audio { width: 100%; height: 40px;}
+    .audio-redo { margin-top: 10px; font-size: 14px; color: var(--coral); cursor: pointer; font-weight: 700; }
+    
+    /* Photo input */
+    .photo-zone { background: white; border-radius: var(--radius); border: 2px dashed rgba(77, 100, 117, 0.3); overflow: hidden; box-shadow: var(--shadow); }
+    .photo-placeholder { padding: 40px 20px; text-align: center; }
+    .photo-placeholder .photo-icon { font-size: 50px; margin-bottom: 15px; display: block; }
+    .photo-placeholder p { font-size: 15px; color: var(--gray-blue); margin-bottom: 20px; font-weight: 600;}
+    .btn-photo { background: var(--turquoise); color: var(--navy); border: none; padding: 14px 30px; border-radius: 24px; font-size: 16px; font-weight: 800; cursor: pointer; font-family: inherit; box-shadow: 0 4px 15px rgba(20,184,212,0.3);}
+    .photo-preview { position: relative; }
+    .photo-preview img { width: 100%; max-height: 300px; object-fit: contain; display: block; background: #f8fafc;}
+    .photo-preview-actions { position: absolute; top: 15px; left: 15px; display: flex; gap: 10px; }
+    .photo-action-btn { background: rgba(17,51,68,0.8); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; backdrop-filter: blur(5px);}
+    
+    /* Name field */
+    .name-field { margin-top: 20px; background: white; border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+    .name-label { font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 10px; }
+    .name-input { width: 100%; border: 2px solid #e0eaf0; border-radius: 10px; padding: 12px 14px; font-size: 15px; color: var(--navy); background: var(--bg); font-family: inherit; direction: rtl; transition: 0.2s;}
+    .name-input:focus { outline: none; border-color: var(--turquoise); background: white;}
+    
+    /* Submit footer */
+    .submit-footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 16px 20px; padding-bottom: calc(16px + env(safe-area-inset-bottom)); background: white; border-top: 1px solid rgba(0,0,0,0.05); box-shadow: 0 -10px 20px rgba(17,51,68,0.05); z-index: 50;}
+    .btn-submit { width: 100%; background: var(--blue); color: white; border: none; padding: 16px; border-radius: var(--radius); font-size: 18px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: inherit; box-shadow: 0 4px 15px rgba(39, 51, 111, 0.3);}
+    .btn-submit:active { transform: scale(0.98); }
+
+    /* ===== SUBMITTING ===== */
+    #screen-submitting { justify-content: center; align-items: center; background: var(--bg); }
+    .spinner { width: 70px; height: 70px; border: 5px solid rgba(20,184,212,0.2); border-top-color: var(--turquoise); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 25px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .submitting-text { font-size: 18px; color: var(--navy); font-weight: 800; }
+
+    /* ===== SUCCESS SCREEN ===== */
+    #screen-success { justify-content: center; align-items: center; text-align: center; padding: 40px 30px; background: linear-gradient(160deg, var(--navy) 0%, var(--blue) 100%); }
+    .success-icon { font-size: 80px; margin-bottom: 20px; animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+    .success-title { font-size: 32px; font-weight: 800; color: white; margin-bottom: 15px; }
+    .success-desc { font-size: 16px; color: var(--turquoise-light); line-height: 1.6; margin-bottom: 45px; max-width: 300px; }
+    .btn-again { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); color: white; padding: 16px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 15px; width: 100%; max-width: 300px; font-family: inherit;}
+    .btn-again.primary-again { background: var(--turquoise); border-color: transparent; color: var(--navy); box-shadow: 0 6px 20px rgba(20,184,212,0.3); }
+
+    /* ===== ERROR TOAST ===== */
+    .toast { position: fixed; bottom: 100px; left: 20px; right: 20px; background: #e53e3e; color: white; padding: 14px 20px; border-radius: 12px; font-size: 14px; font-weight: 700; text-align: center; z-index: 1000; opacity: 0; transform: translateY(20px); transition: 0.3s; pointer-events: none; box-shadow: 0 4px 15px rgba(229,62,62,0.4);}
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    #camera-input { display: none; }
+  </style>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAcVlqfO_v4HGj7KC8-wPyC7EgWOmuyJ7A",
+        authDomain: "eilat-service-2035.firebaseapp.com",
+        projectId: "eilat-service-2035",
+        storageBucket: "eilat-service-2035.firebasestorage.app",
+        messagingSenderId: "12177419107",
+        appId: "1:12177419107:web:70e353e46294af5ef30156"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    window.db = getFirestore(app);
+    window.collection = collection;
+    window.addDoc = addDoc;
+    window.serverTimestamp = serverTimestamp;
+  </script>
+</head>
+<body>
+
+<div id="screen-welcome" class="screen active">
+  <div class="welcome-logo">
+    <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="25" cy="25" r="22" stroke="#14B8D4" stroke-width="2.5"/>
+      <path d="M15 32 C15 22, 25 16, 35 22" stroke="#81C6DD" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <circle cx="25" cy="20" r="5" fill="#14B8D4"/>
+      <path d="M18 35 L32 35" stroke="#FAC220" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="welcome-year">2035</div>
+  <div class="welcome-title">תושבים מעצבים<br>חווית שירות</div>
+  <div class="welcome-desc">בחרו פרסונה ותרחיש, ושתפו את הרעיון שלכם לעתיד קומת השירות בעיר</div>
+  <div class="welcome-steps">
+    <div class="welcome-step">
+      <div class="step-num">1</div>
+      <div class="step-text">בחרו פרסונה</div>
+    </div>
+    <div class="welcome-step">
+      <div class="step-num">2</div>
+      <div class="step-text">בחרו תרחיש</div>
+    </div>
+    <div class="welcome-step">
+      <div class="step-num">3</div>
+      <div class="step-text">שתפו רעיון</div>
+    </div>
+  </div>
+  <button class="btn-primary" onclick="goTo('selectPersona')">מתחילים ←</button>
+</div>
+
+<div id="screen-selectPersona" class="screen">
+  <div class="app-header">
+    <div>
+      <div class="app-header h1" style="font-size:16px;font-weight:800;">שלב 1 מתוך 3</div>
+      <div class="subtitle">בחרו פרסונה</div>
+    </div>
+    <button class="back-btn" onclick="goTo('welcome')">← חזרה</button>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-step active"></div>
+    <div class="progress-step"></div>
+    <div class="progress-step"></div>
+  </div>
+  <div class="grid-container">
+    <div class="grid-title">מיהו/מיהי המשתמש/ת?</div>
+    <div class="grid-subtitle">הגרילו קלף פרסונה מהחפיסה — ובחרו כאן:</div>
+    <div id="persona-grid" class="card-grid"></div>
+  </div>
+</div>
+
+<div id="screen-personaDetail" class="screen">
+  <div class="app-header">
+    <div>
+      <div style="font-size:16px;font-weight:800;color:white;">הפרסונה שנבחרה</div>
+      <div class="subtitle">קראו ואשרו</div>
+    </div>
+    <button class="back-btn" onclick="goTo('selectPersona')">← חזרה</button>
+  </div>
+  <div class="detail-container">
+    <div id="persona-detail-content"></div>
+  </div>
+  <div class="detail-footer">
+    <button class="btn-full" onclick="goTo('selectScenario')">בחרתי — ממשיכים לתרחיש ←</button>
+  </div>
+</div>
+
+<div id="screen-selectScenario" class="screen">
+  <div class="app-header">
+    <div>
+      <div style="font-size:16px;font-weight:800;color:white;">שלב 2 מתוך 3</div>
+      <div class="subtitle">בחרו תרחיש</div>
+    </div>
+    <button class="back-btn" onclick="goTo('personaDetail')">← חזרה</button>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-step done"></div>
+    <div class="progress-step active"></div>
+    <div class="progress-step"></div>
+  </div>
+  <div class="grid-container">
+    <div class="grid-title">מה התרחיש?</div>
+    <div class="grid-subtitle">הגרילו קלף תרחיש מהחפיסה — ובחרו כאן:</div>
+    <div id="scenario-grid" class="card-grid"></div>
+  </div>
+</div>
+
+<div id="screen-scenarioDetail" class="screen">
+  <div class="app-header">
+    <div>
+      <div style="font-size:16px;font-weight:800;color:white;">התרחיש שנבחר</div>
+      <div class="subtitle">קראו ואשרו</div>
+    </div>
+    <button class="back-btn" onclick="goTo('selectScenario')">← חזרה</button>
+  </div>
+  <div class="detail-container">
+    <div id="scenario-detail-content"></div>
+  </div>
+  <div class="detail-footer">
+    <button class="btn-full" onclick="goTo('input')">ממשיכים — מה הרעיון שלי? ←</button>
+  </div>
+</div>
+
+<div id="screen-input" class="screen">
+  <div class="app-header">
+    <div>
+      <div style="font-size:16px;font-weight:800;color:white;">שלב 3 מתוך 3</div>
+      <div class="subtitle">הרעיון שלי</div>
+    </div>
+    <button class="back-btn" onclick="goTo('scenarioDetail')">← חזרה</button>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-step done"></div>
+    <div class="progress-step done"></div>
+    <div class="progress-step active"></div>
+  </div>
+  <div id="selected-summary" class="selected-summary"></div>
+  <div class="input-container">
+    <div class="input-title">מה השירות שנדרש כאן?</div>
+    <div class="input-subtitle">אם הייתם מעצבים את חווית השירות לפרסונה ולתרחיש שנבחרו — מה הייתם מציעים?</div>
+
+    <div class="input-tabs">
+      <div class="input-tab active" onclick="switchTab('text')" id="tab-text">
+        <span class="tab-icon">✏️</span>כתיבה
+      </div>
+      <div class="input-tab" onclick="switchTab('audio')" id="tab-audio">
+        <span class="tab-icon">🎙️</span>הקלטה
+      </div>
+      <div class="input-tab" onclick="switchTab('photo')" id="tab-photo">
+        <span class="tab-icon">📷</span>צילום
+      </div>
+    </div>
+
+    <div id="tab-content-text" class="tab-content active">
+      <textarea
+        class="idea-textarea"
+        id="idea-text"
+        placeholder="כתבו כאן את הרעיון שלכם... איזה שירות, מוצר, חוויה או שינוי מרחבי היה נותן מענה לצורך של הפרסונה בתרחיש זה?"
+        oninput="updateCharCount()"
+        maxlength="1000"
+      ></textarea>
+      <div class="char-count"><span id="char-count">0</span>/1000</div>
+    </div>
+
+    <div id="tab-content-audio" class="tab-content">
+      <div class="audio-zone">
+        <button class="record-btn" id="record-btn" onclick="toggleRecording()">🎙️</button>
+        <div class="record-status" id="record-status">לחצו להקלטה</div>
+        <div class="record-timer" id="record-timer">0:00</div>
+        <div id="audio-playback" class="audio-playback" style="display:none;">
+          <audio id="audio-player" controls></audio>
+          <div class="audio-redo" onclick="resetAudio()">הקליטו מחדש</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-content-photo" class="tab-content">
+      <div class="photo-zone" id="photo-zone">
+        <div class="photo-placeholder" id="photo-placeholder">
+          <span class="photo-icon">📸</span>
+          <p>צלמו סקיצה, פתקית, או כל דבר שמבטא את הרעיון שלכם</p>
+          <button class="btn-photo" onclick="openCamera()">פתחו מצלמה</button>
+        </div>
+        <div class="photo-preview" id="photo-preview" style="display:none;">
+          <img id="photo-img" src="" alt="תמונה">
+          <div class="photo-preview-actions">
+            <button class="photo-action-btn" onclick="openCamera()">📷 צילום מחדש</button>
+            <button class="photo-action-btn" onclick="removePhoto()">🗑️ מחיקה</button>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="camera-input" accept="image/*" capture="environment" onchange="handlePhoto(event)">
+    </div>
+
+    <div class="name-field">
+      <div class="name-label">שם (אופציונלי)</div>
+      <input type="text" class="name-input" id="submitter-name" placeholder="השם שלכם">
+    </div>
+  </div>
+
+  <div class="submit-footer">
+    <button class="btn-submit" id="submit-btn" onclick="submitIdea()">
+      <span>שלחו את הרעיון לענן</span> <span>🚀</span>
+    </button>
+  </div>
+</div>
+
+<div id="screen-submitting" class="screen">
+  <div class="spinner"></div>
+  <div class="submitting-text">משגר רעיונות...</div>
+</div>
+
+<div id="screen-success" class="screen">
+  <div class="success-icon">✅</div>
+  <div class="success-title">תודה רבה!</div>
+  <div class="success-desc">הרעיון שלכם נשלח בהצלחה ומוקרן כעת על המסך המרכזי.</div>
+  <button class="btn-again primary-again" onclick="startNewRound()">הוסיפו רעיון נוסף ←</button>
+  <button class="btn-again" onclick="goTo('welcome')">חזרה לתחילה</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+//  DATA 
+// ============================================================
+const PERSONAS = [
+  { id:1,  name:'ליאת',   sub:'האמא',                  need:'סביבה שקטה, קרירה ומרגיעה, שילוט ברור',           quote:'אני חייבת לדעת מראש לאן בדיוק להגיע מהרגע הראשון', img:'DATA/persona1.jpg', desc:'ליאת מגיעה לבניין העירייה אחרי הליכה מתישה בשיא החום, דוחפת עגלה ומרגיעה תינוק שבוכה. היא עמוסה ומוסחת. הדבר האחרון שיש לה סבלנות אליו הוא לחפש דרך.' },
+  { id:2,  name:'דן',     sub:'היזם',                  need:'התנהלות יעילה ומהירה, חלל שמתפקד כמו טרקלין עסקים', quote:'חייב לנצל את זמן ההמתנה לטובת זמן עבודה',         img:'DATA/persona2.jpg', desc:'דן מנהל עסק פעיל באילת ועבורו כל דקה שווה כסף. כל שנייה של המתנה נתפסת כזמן מבוזבז. הוא ממשיך לעבוד מהנייד גם כשנמצא בתוך המבנה.' },
+  { id:3,  name:'אתי',    sub:'בעלת עסק',              need:'מסלול מהיר לבעלי עסקים, טיפול קצר וממוקד',        quote:'העונה מתחילה, אין לי זמן מיותר לבזבז על אישורים',  img:'DATA/persona3.jpg', desc:'כלכלת העסק של אתי נשענת על עונות התיירות. היא מגיעה לפני פתיחת העונה בידיעה שכל עיכוב בירוקרטי פוגע ישירות בפרנסה.' },
+  { id:4,  name:'רועי',   sub:'הסטודנט',               need:'מענה אוטומטי וזריז דרך הנייד, ללא המתנה לפקיד',   quote:'שהמערכת תבדוק לי בשנייה אם אני זכאי למלגה',       img:'DATA/persona4.jpg', desc:'רועי לומד ועובד במלצרות כדי לממן את עצמו. הזמן שלו קצוב. הוא מחפש לשלוף מידע דרך הנייד בלי לעמוד בתורים.' },
+  { id:5,  name:'דוד',    sub:'הגמלאי',                need:'יחס אישי וחם, שירות ללא תלות בטכנולוגיה',         quote:'אני רוצה לדבר עם בן אדם, לא עם מסך',              img:'DATA/persona5.jpg', desc:'דוד שייך לדור הוותיק ולא מסתדר עם מסכים ועמדות שירות עצמי. הוא מחפש לראות פנים מוכרות שיושב מולו, יקשיב ויעזור.' },
+  { id:6,  name:'אבי',    sub:'תושב העיר',             need:'שקיפות, הוגנות ואווירה שמרגיעה מתחים',            quote:'נמאס לי מסחבת, הכל מרגיש כל כך איטי',             img:'DATA/persona6.jpg', desc:'אבי מגיע כבר חסר סבלנות, חושש להיתקע בבירוקרטיה ארוכה. הוא דרוך ומתגונן, מצפה לקושי ולעיכובים.' },
+  { id:7,  name:'דניאל',  sub:'עולה חדש',              need:'הכוונה חזותית בצבעים וסמלים, ללא תלות בשפה',      quote:'אני לא מבין את השילוט ומתבייש לבקש עזרה',         img:'DATA/persona7.jpg', desc:'דניאל עלה לאחרונה מצרפת. קשה לו לקרוא עברית. כשנכנס למבנה רשמי הוא מרגיש מבולבל ותלוש.' },
+  { id:8,  name:'קלואי',  sub:'תושבת חדשה',            need:'תחושת שייכות, חיבור לסיפור ולגאווה של העיר',      quote:'אני רוצה להרגיש שייכת לעיר',                       img:'DATA/persona8.jpg', desc:'קלואי עברה לאילת לפני זמן קצר ומחפשת למצוא את מקומה. כשמגיעה לעירייה, היא זקוקה לאווירה חמה שתפיג תחושת זרות.' },
+  { id:9,  name:'נועם',   sub:'נגישות לכולם',          need:'נגישות מלאה, עצמאות מוחלטת, שוויון',              quote:'אני צריך שהמרחב יראה אותי בטבעיות',                img:'DATA/persona9.jpg', desc:'נועם מתנייד בכיסא גלגלים. חשוב לו מאוד להסתובב בעצמאות מוחלטת, להגיע לכל עמדה ולנוע מבלי להיות תלוי באחרים.' },
+  { id:10, name:'עומר',   sub:'רגישות חושית',          need:'פינות שקטות וסגורות, תאורה עדינה, עיצוב מרגיע',   quote:'האורות החזקים והרעש פה לא נעימים לי',              img:'DATA/persona10.jpg', desc:'עומר רגיש מאוד להצפה חושית. עומס גירויים, רעש ואור חזק גורמים לו למועקה פיזית, חרדה ורצון לברוח.' },
+  { id:11, name:'יעל',    sub:'שירות אנושי',           need:'אזור סטרילי ממעקב טכנולוגי, פרטיות, יחס אנושי',   quote:'אני לא מסכימה שיסרקו אותי, באתי לקבל יחס מבני אדם', img:'DATA/persona11.jpg', desc:'יעל שומרת בקנאות על פרטיותה. היא מסרבת שמצלמות יסרקו אותה, מתנגדת למעקב דיגיטלי ודורשת טיפול רק מבני אדם.' },
+  { id:12, name:'חן',     sub:'הדור הדיגיטלי',         need:'שירות שמתחבר לנייד, פעולה זריזה, עיצוב חדשני',    quote:'למה הייתי צריכה להגיע פיזית? הכל יכול להתבצע מהנייד', img:'DATA/persona12.jpg', desc:'חן רגילה לנהל את כל חייה דרך הטלפון. הגעה פיזית לעירייה נתפסת בעיניה כטרחה מיותרת.' },
+  { id:13, name:'מאיה',   sub:'דור העתיד',             need:'מקום פתוח ויצירתי, כלים עתידניים, עשייה משותפת',  quote:'באתי לעצב את מתחם הנוער שלנו בתלת מימד',          img:'DATA/persona13.jpg', desc:'מאיה נולדה לעולם של מסכים מתקדמים. היא לא מגיעה לעמוד בתור, אלא להשפיע, ליזום ולהרים פרויקטים לנוער.' },
+  { id:14, name:'אלי',    sub:'מנהל התחזוקה',          need:'חומרים עמידים, ריהוט קל לניוד, גישה נוחה לתחזוקה', quote:'האבק המדברי נכנס לכל מקום, חייבים לנקות בקלות',  img:'DATA/persona14.jpg', desc:'אלי והצוות שלו נאבקים יום יום בחול המדברי ובלכלוך. עיצוב מסורבל עם פינות נסתרות מקשה מאוד על עבודתם.' },
+  { id:15, name:'ארנון',  sub:'מנהל קומת השירות',      need:'שדה ראייה רחב, קשר עין עם צוות, שליטה עדינה',     quote:'אני כאן כדי לתת תמיכה לצוות ולפתור בעיות במהירות', img:'DATA/persona15.jpg', desc:'ארנון נדרש לנהל אולם שירות גדול, לנווט בין אנשים ולשחרר עומסים. חייב לראות את כל המתרחש ברגישות ובלי לשדר "שוטר".' },
+  { id:16, name:'שירלי',  sub:'הפעילה הקהילתית',       need:'אולם רב-תכליתי, ריהוט גמיש, חיים לאחר שעות הפעילות', quote:'המקום הזה יכול להיות סלון עירוני בערב',          img:'DATA/persona16.jpg', desc:'שירלי רואה במבנה העירייה נכס ציבורי. היא דורשת שהאולם ימשיך לפעול לאחר שעות קבלת הקהל.' },
+  { id:17, name:'רעות',   sub:'נותנת השירות',          need:'סביבה פתוחה, ישיבה לצד התושבים, שיחה ללא מחסומים', quote:'אני לא רוצה להרגיש מנותקת מאחורי דלפק',          img:'DATA/persona17.jpg', desc:'רעות עובדת קשה ומתמודדת עם עומס יומיומי. ישיבה מאחורי חלון זכוכית גורמת לה להרגיש מרוחקת מהתושבים.' },
+  { id:18, name:'ד"ר כהן', sub:'פעיל סביבתי',         need:'מבנה ירוק, חומרים מקומיים, צמחייה ואנרגיה נקייה',  quote:'המבנה של כולנו חייב להוכיח שאנחנו שומרים על הטבע', img:'DATA/persona18.jpg', desc:'ד"ר כהן מטריד משבר האקלים במיוחד בסביבה המדברית של אילת. הוא בוחן אם המבנה חוסך בחשמל ולא מזהם את המפרץ.' },
+];
+
+const SCENARIOS = [
+  { id:1,  name:'חצר התרעננות אקלימית',          img:'DATA/scenario1.jpg',  desc:'עוד לפני הכניסה לבניין, עוברים דרך חצר מעוצבת כ"נווה מדבר". מערכות הצללה דינמיות וזרימות אוויר יוצרות קירור טבעי, ודפוסי אור רכים על הקרקע מרגיעים את הגוף מהחום האילתי.' },
+  { id:2,  name:'חזית "חכמה" שמרגיעה',           img:'DATA/scenario2.jpg',  desc:'הקיר החיצוני בנוי משלבים דינמיים הזזים בהתאם לתנועת השמש. השלבים יוצרים "צורות רכות של אור" המדמות קרני שמש מבעד לעלים — מראה טבעי המשרה רוגע על הממתינים.' },
+  { id:3,  name:'המעבר המרגיע',                   img:'DATA/scenario3.jpg',  desc:'בחודשי הקיץ, הכניסה נפתחת דרך "אזור חכם" המזהה את רמת המתח של התושב ומגיב: התאורה מתעמעמת, האוויר מתקרר בעדינות ורחש גלים מלווה את הכניסה.' },
+  { id:4,  name:'נווה מדבר שקט ורגוע',            img:'DATA/scenario4.jpg',  desc:'תקרה מיוחדת בולמת רעשים. החלל מעוצב בתאורה חמימה וספות נוחות, יוצר תחושת פרטיות בחלל ציבורי ללא דלפקים.' },
+  { id:5,  name:'קבלת פנים חכמה ואישית',          img:'DATA/scenario5.jpg',  desc:'המבנה מזהה את התושב ומכוון אותו מיד עם כניסתו. אין פתקי תור — המערכת מפנה ב"חיוך דיגיטלי" למקום הנכון.' },
+  { id:6,  name:'עוזרים אישיים חכמים',            img:'DATA/scenario6.jpg',  desc:'רובוטים קטנים וידידותיים מלווים את התושב פיזית לכיסא ההמתנה או לנקודת השירות, כדי למנוע תחושת אובדן בחלל הגדול.' },
+  { id:7,  name:'שולחן הקפה החכם',                img:'DATA/scenario7.jpg',  desc:'במקום לבהות במסכי תורים, התושב מניח הטלפון על שולחן עץ חכם שמאיר בעדינות ומציג את זמן ההמתנה — מנוחה ברוגע עם קפה.' },
+  { id:8,  name:'כיכר התנועה של השירות',          img:'DATA/scenario8.jpg',  desc:'בוטלו תורים ועמידה מול דלפקים. התושבים יושבים על ספה, והפקיד ניגש אליהם עם טאבלט לשירות "בגובה העיניים".' },
+  { id:9,  name:'אזור שירות נקי ממסכים',          img:'DATA/scenario9.jpg',  desc:'אזור מיוחד עשוי מחומרים טבעיים — עץ ואבן. אין מצלמות או מסכים, רק שירות אנושי חם ואישי "כמו פעם".' },
+  { id:10, name:'שקיפות מלאה במרחב',              img:'DATA/scenario10.jpg', desc:'קומת השירות פתוחה לחלוטין — אין חדרים סגורים. המרחב מואר ושקוף כדי להגביר אמון ולשדר הוגנות.' },
+  { id:11, name:'מיצג האנרגיה הסולארית',          img:'DATA/scenario11.jpg', desc:'במרכז הלובי אלמנט פיסולי של אור ותנועה. זרימות האור משתנות בזמן אמת לפי כמות האנרגיה הסולארית המיוצרת בעיר.' },
+  { id:12, name:'קירות שמספרים סיפור',            img:'DATA/scenario12.jpg', desc:'קירות המבנה מספרים את ההיסטוריה של אילת ומציגים פרויקטים עירוניים עכשוויים — שייכות, מעורבות וגאווה מקומית.' },
+  { id:13, name:'בועת פרטיות בחלל פתוח',          img:'DATA/scenario13.jpg', desc:'כורסאות עגולות וגבוהות העוטפות את היושב ובולעות רעש חיצוני — פרטיות מוחלטת בלב אולם הומה.' },
+  { id:14, name:'שולחנות תכנון משותפים',           img:'DATA/scenario14.jpg', desc:'שולחנות טכנולוגיים מתקדמים לצעירים. יוצרים מודלים תלת-ממדיים לשכונותיהם ומשפיעים על עתיד העיר.' },
+  { id:15, name:'שירות עד הבית מהאוויר',          img:'DATA/scenario15.jpg', desc:'אישורים, טפסים ורכיבים פיזיים מועברים ישירות לדלת התושב באמצעות רחפנים עירוניים שקטים.' },
+  { id:16, name:'הסלון העירוני בערב',             img:'DATA/scenario16.jpg', desc:'בשעות אחה"צ והערב, הלובי הופך ל"סלון עירוני" המארח סדנאות, הרצאות ומפגשים חברתיים תחת תאורת שקיעה.' },
+  { id:17, name:'יציאה מכבדת לרחוב',             img:'DATA/scenario17.jpg', desc:'מסדרון מעבר הדרגתי — הטמפרטורה עולה לאט, הריצוף משתנה לאבני מדרכה, כדי שהגוף יתרגל ברוגע ליציאה לחום.' },
+  { id:18, name:'משוב דרך צבע ומפת רגש',         img:'DATA/scenario18.jpg', desc:'בסיום השירות, התושב בוחר אובייקט בצבע שמייצג את תחושתו. לאורך היום נוצרת מפת רגש חיה המשקפת את חווית השירות.' },
+];
+
+// ============================================================
+//  STATE
+// ============================================================
+let state = {
+  persona: null,
+  scenario: null,
+  inputMode: 'text',
+  audioBlob: null,
+  photoDataUrl: null,
+  recordTimer: null,
+  recordSeconds: 0,
+  mediaRecorder: null,
+  audioChunks: [],
+};
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function goTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  window.scrollTo(0, 0);
+
+  if (screen === 'selectPersona') renderPersonaGrid();
+  if (screen === 'personaDetail') renderDetail('persona');
+  if (screen === 'selectScenario') renderScenarioGrid();
+  if (screen === 'scenarioDetail') renderDetail('scenario');
+  if (screen === 'input') renderInputSummary();
+}
+
+// ============================================================
+//  GRIDS - עודכן לריבועים מושלמים
+// ============================================================
+function renderPersonaGrid() {
+  const grid = document.getElementById('persona-grid');
+  grid.innerHTML = PERSONAS.map(p => `
+    <div class="card ${state.persona?.id === p.id ? 'selected' : ''}" onclick="selectPersona(${p.id})">
+      <div class="card-img-wrapper">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+      </div>
+      <div class="card-label">
+        ${p.name}<br><span class="card-subtitle">${p.sub}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderScenarioGrid() {
+  const grid = document.getElementById('scenario-grid');
+  grid.innerHTML = SCENARIOS.map(s => `
+    <div class="card ${state.scenario?.id === s.id ? 'selected' : ''}" onclick="selectScenario(${s.id})">
+      <div class="card-img-wrapper">
+        <img src="${s.img}" alt="${s.name}" loading="lazy">
+      </div>
+      <div class="card-label">${s.name}</div>
+    </div>
+  `).join('');
+}
+
+function selectPersona(id) {
+  state.persona = PERSONAS.find(p => p.id === id);
+  goTo('personaDetail');
+}
+
+function selectScenario(id) {
+  state.scenario = SCENARIOS.find(s => s.id === id);
+  goTo('scenarioDetail');
+}
+
+// ============================================================
+//  DETAIL VIEWS
+// ============================================================
+function renderDetail(type) {
+  const item = type === 'persona' ? state.persona : state.scenario;
+  if (!item) return;
+
+  const isPersona = type === 'persona';
+  const html = `
+    <div class="detail-hero">
+      <img src="${item.img}" alt="${item.name}">
+      <div class="detail-hero-overlay">
+        <div class="detail-hero-name">${item.name}</div>
+        <div class="detail-hero-sub">${isPersona ? item.sub : 'תרחיש ' + item.id}</div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-section">
+        <div class="detail-section-label">${isPersona ? 'הסיפור' : 'התרחיש'}</div>
+        <div class="detail-section-text">${item.desc}</div>
+      </div>
+      ${isPersona ? `
+        <div class="detail-section">
+          <div class="detail-section-label">הצורך המרכזי</div>
+          <div class="detail-section-text">${item.need}</div>
+        </div>
+        <div class="detail-quote">
+          <div class="detail-quote-text">${item.quote}</div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+
+  document.getElementById(type + '-detail-content').innerHTML = html;
+}
+
+// ============================================================
+//  INPUT SUMMARY
+// ============================================================
+function renderInputSummary() {
+  const p = state.persona;
+  const s = state.scenario;
+  if (!p || !s) return;
+
+  document.getElementById('selected-summary').innerHTML = `
+    <div class="summary-card">
+      <img src="${p.img}" alt="${p.name}">
+      <div class="summary-card-text">
+        <div class="summary-card-label">פרסונה</div>
+        <div class="summary-card-name">${p.name} — ${p.sub}</div>
+      </div>
+    </div>
+    <div class="summary-plus">+</div>
+    <div class="summary-card">
+      <img src="${s.img}" alt="${s.name}">
+      <div class="summary-card-text">
+        <div class="summary-card-label">תרחיש</div>
+        <div class="summary-card-name">${s.name}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+//  TABS
+// ============================================================
+function switchTab(tab) {
+  state.inputMode = tab;
+  document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('tab-content-' + tab).classList.add('active');
+}
+
+function updateCharCount() {
+  const val = document.getElementById('idea-text').value.length;
+  document.getElementById('char-count').textContent = val;
+}
+
+// ============================================================
+//  AUDIO RECORDING
+// ============================================================
+let recordInterval = null;
+
+async function toggleRecording() {
+  if (state.mediaRecorder && state.mediaRecorder.state === 'recording') {
+    stopRecording();
+  } else {
+    await startRecording();
+  }
+}
+
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    state.audioChunks = [];
+    state.mediaRecorder = new MediaRecorder(stream);
+    state.mediaRecorder.ondataavailable = e => state.audioChunks.push(e.data);
+    state.mediaRecorder.onstop = () => {
+      state.audioBlob = new Blob(state.audioChunks, { type: 'audio/webm' });
+      const url = URL.createObjectURL(state.audioBlob);
+      document.getElementById('audio-player').src = url;
+      document.getElementById('audio-playback').style.display = 'block';
+      stream.getTracks().forEach(t => t.stop());
+    };
+    state.mediaRecorder.start();
+
+    const btn = document.getElementById('record-btn');
+    btn.innerHTML = '⏹️';
+    btn.classList.add('recording');
+    document.getElementById('record-status').textContent = 'מקליט... לחצו לעצירה';
+
+    state.recordSeconds = 0;
+    clearInterval(recordInterval);
+    recordInterval = setInterval(() => {
+      state.recordSeconds++;
+      const m = Math.floor(state.recordSeconds / 60);
+      const s = state.recordSeconds % 60;
+      document.getElementById('record-timer').textContent = m + ':' + String(s).padStart(2, '0');
+      if (state.recordSeconds >= 120) stopRecording();
+    }, 1000);
+
+  } catch (err) {
+    showToast('לא ניתן לגשת למיקרופון. בדקו הרשאות.');
+  }
+}
+
+function stopRecording() {
+  if (state.mediaRecorder) state.mediaRecorder.stop();
+  clearInterval(recordInterval);
+  const btn = document.getElementById('record-btn');
+  btn.innerHTML = '🎙️';
+  btn.classList.remove('recording');
+  document.getElementById('record-status').textContent = 'הקלטה הסתיימה ✓';
+}
+
+function resetAudio() {
+  state.audioBlob = null;
+  state.audioChunks = [];
+  document.getElementById('audio-playback').style.display = 'none';
+  document.getElementById('record-status').textContent = 'לחצו להקלטה';
+  document.getElementById('record-timer').textContent = '0:00';
+  document.getElementById('record-btn').innerHTML = '🎙️';
+}
+
+// ============================================================
+//  PHOTO
+// ============================================================
+function openCamera() {
+  document.getElementById('camera-input').click();
+}
+
+function handlePhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX = 1024;
+      let w = img.width, h = img.height;
+      if (w > h && w > MAX) { h = h * MAX / w; w = MAX; }
+      else if (h > MAX) { w = w * MAX / h; h = MAX; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      state.photoDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+      document.getElementById('photo-img').src = state.photoDataUrl;
+      document.getElementById('photo-placeholder').style.display = 'none';
+      document.getElementById('photo-preview').style.display = 'block';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function removePhoto() {
+  state.photoDataUrl = null;
+  document.getElementById('photo-placeholder').style.display = 'block';
+  document.getElementById('photo-preview').style.display = 'none';
+}
+
+// ============================================================
+//  SUBMIT 
+// ============================================================
+async function submitIdea() {
+  const text = document.getElementById('idea-text').value.trim();
+  const hasAudio = !!state.audioBlob;
+  const hasPhoto = !!state.photoDataUrl;
+  const name = document.getElementById('submitter-name').value.trim();
+
+  if (!text && !hasAudio && !hasPhoto) {
+    showToast('יש להזין טקסט, הקלטה או תמונה לפני השליחה');
+    return;
+  }
+
+  goTo('submitting');
+
+  const payload = {
+    persona: state.persona.name + (state.persona.sub ? ' - ' + state.persona.sub : ''),
+    scenario: state.scenario.name,
+    timestamp: window.serverTimestamp(),
+    submitterName: name
+  };
+
+  if (state.inputMode === 'text') {
+    payload.type = 'text';
+    payload.solution = text;
+  } else if (state.inputMode === 'photo') {
+    payload.type = 'image';
+    payload.image = state.photoDataUrl;
+  } else if (state.inputMode === 'audio') {
+    payload.type = 'text'; 
+    payload.solution = "🎙️ המשתמש הקליט הודעה קולית (נשמר במערכת הניהול)";
+  }
+
+  try {
+    await window.addDoc(window.collection(window.db, "solutions"), payload);
+    goTo('success');
+  } catch (err) {
+    console.error("Error saving to Firebase:", err);
+    showToast('שגיאה בשליחה לענן. אנא נסו שוב.');
+    goTo('input');
+  }
+}
+
+function startNewRound() {
+  state.persona = null;
+  state.scenario = null;
+  state.audioBlob = null;
+  state.photoDataUrl = null;
+  state.inputMode = 'text';
+  document.getElementById('idea-text').value = '';
+  document.getElementById('submitter-name').value = '';
+  document.getElementById('char-count').textContent = '0';
+  resetAudio();
+  removePhoto();
+  switchTab('text');
+  goTo('selectPersona');
+}
+
+// ============================================================
+//  TOAST
+// ============================================================
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

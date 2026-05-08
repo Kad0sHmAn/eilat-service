@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לוח רעיונות - תצוגת בועות זכוכית 2035</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* פלטת הצבעים הרשמית */
+        :root {
+            --navy: #113344;
+            --blue: #27336F;
+            --turquoise-light: #81C6DD;
+            --turquoise: #14B8D4;
+            --coral: #BB801C;
+            --yellow: #FAC220;
+            --bg: #E4F4F9;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #cbeff7 100%);
+            margin: 0; padding: 0; height: 100vh; overflow: hidden; position: relative;
+        }
+        
+        h1 {
+            color: var(--navy); 
+            font-size: 2.8em; 
+            font-weight: 800;
+            text-align: center; 
+            margin-top: 30px;
+            position: relative; 
+            z-index: 10; 
+            pointer-events: none;
+            text-shadow: 0 4px 15px rgba(255, 255, 255, 0.9);
+        }
+
+        /* עיצוב כדורי הזכוכית */
+        .bubble {
+            width: 280px; 
+            height: 280px; 
+            border-radius: 50%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border: 2px solid var(--blue); 
+            box-shadow: 0 10px 30px rgba(17, 51, 68, 0.12);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            padding: 30px; 
+            box-sizing: border-box; 
+            text-align: center;
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            transition: opacity 0.8s ease-in-out; 
+            will-change: transform;
+            overflow: hidden; 
+        }
+
+        /* אפקט הילה פנימי עדין */
+        .bubble::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 60%);
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .bubble { 
+                width: 180px; 
+                height: 180px; 
+                padding: 15px; 
+            }
+            .bubble-tags { display: none; }
+            h1 { font-size: 1.5em; }
+        }
+
+        .bubble-content {
+            width: 100%;
+            max-height: 100%; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden; 
+            z-index: 2;
+        }
+
+        .bubble-tags { 
+            font-size: 0.8em; 
+            color: var(--blue); 
+            font-weight: 800; 
+            margin-bottom: 8px; 
+            border-bottom: 2px solid var(--yellow); 
+            padding-bottom: 6px; 
+            flex-shrink: 0;
+        }
+
+        .bubble-solution { 
+            font-size: 1em; 
+            color: var(--navy); 
+            line-height: 1.3; 
+            word-wrap: break-word; 
+            font-weight: 700;
+        }
+
+        .bubble-img {
+            max-width: 100%;
+            max-height: 140px;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 2px solid var(--turquoise-light);
+            box-shadow: 0 4px 12px rgba(17, 51, 68, 0.15);
+        }
+
+        .fade-out { 
+            opacity: 0 !important; 
+        }
+
+        .new-tag {
+            position: absolute;
+            top: 25px;
+            right: -5px;
+            background: var(--coral);
+            color: white;
+            font-size: 0.75em;
+            font-weight: 800;
+            padding: 3px 14px;
+            border-radius: 12px;
+            transform: rotate(12deg);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 3;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>תושבים מעצבים חווית שירות 2035</h1>
+    
+    <div id="bubblesContainer">
+        <div class="bubble" id="bubble1"><div class="bubble-content" id="content1"></div></div>
+        <div class="bubble" id="bubble2"><div class="bubble-content" id="content2"></div></div>
+        <div class="bubble" id="bubble3"><div class="bubble-content" id="content3"></div></div>
+        <div class="bubble" id="bubble4"><div class="bubble-content" id="content4"></div></div>
+        <div class="bubble" id="bubble5"><div class="bubble-content" id="content5"></div></div>
+        <div class="bubble" id="bubble6"><div class="bubble-content" id="content6"></div></div>
+        <div class="bubble" id="bubble7"><div class="bubble-content" id="content7"></div></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAcVlqfO_v4HGj7KC8-wPyC7EgWOmuyJ7A",
+            authDomain: "eilat-service-2035.firebaseapp.com",
+            projectId: "eilat-service-2035",
+            storageBucket: "eilat-service-2035.firebasestorage.app",
+            messagingSenderId: "12177419107",
+            appId: "1:12177419107:web:70e353e46294af5ef30156"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        let allIdeas = [];
+        
+        const getBubbleSize = () => window.innerWidth <= 768 ? 180 : 280;
+        
+        // פונקציה לייצור מהירות אקראית וגבוהה יותר עם כיוון התחלתי מתחלף
+        function getFastSpeed() {
+            const speed = (Math.random() * 1.5) + 0.8; 
+            return Math.random() > 0.5 ? speed : -speed;
+        }
+        
+        const bubblesData = Array.from({ length: 7 }, () => ({
+            x: Math.random() * (window.innerWidth - getBubbleSize()),
+            y: Math.random() * (window.innerHeight - getBubbleSize()),
+            vx: getFastSpeed(), 
+            vy: getFastSpeed()
+        }));
+
+        function animate() {
+            const size = getBubbleSize();
+            const maxX = window.innerWidth - size;
+            const maxY = window.innerHeight - size;
+
+            for (let i = 1; i <= 7; i++) {
+                const b = document.getElementById(`bubble${i}`);
+                if (!b) continue;
+
+                const d = bubblesData[i-1];
+                d.x += d.vx; 
+                d.y += d.vy;
+
+                if (d.x <= 0 || d.x >= maxX) d.vx *= -1;
+                if (d.y <= 0 || d.y >= maxY) d.vy *= -1;
+
+                if (d.x < 0) d.x = 0; if (d.x > maxX) d.x = maxX;
+                if (d.y < 0) d.y = 0; if (d.y > maxY) d.y = maxY;
+
+                b.style.transform = `translate3d(${d.x}px, ${d.y}px, 0)`; 
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        async function fetchIdeas() {
+            try {
+                const snap = await getDocs(collection(db, "solutions"));
+                allIdeas = []; 
+                snap.forEach(d => allIdeas.push(d.data()));
+                if (allIdeas.length > 0) updateBubbles();
+            } catch (e) { console.error(e); }
+        }
+
+        function updateBubbles() {
+            if (allIdeas.length === 0) return;
+            
+            let items = [...allIdeas].sort(() => 0.5 - Math.random());
+            while(items.length < 7) {
+                items.push(items[Math.floor(Math.random() * items.length)]);
+            }
+            items = items.slice(0, 7);
+            
+            for (let i = 1; i <= 7; i++) {
+                const b = document.getElementById(`bubble${i}`);
+                const c = document.getElementById(`content${i}`);
+                const item = items[i-1];
+                
+                let bodyHTML = '';
+                if (item.type === 'image' && item.image) {
+                    bodyHTML = `<img src="${item.image}" class="bubble-img" alt="פתקית">`;
+                } else {
+                    bodyHTML = `<div class="bubble-solution">${item.solution || ''}</div>`;
+                }
+                
+                b.classList.add('fade-out');
+                setTimeout(() => {
+                    const newTag = Math.random() > 0.8 ? '<div class="new-tag">חדש</div>' : '';
+                    
+                    c.innerHTML = `
+                        ${newTag}
+                        <div class="bubble-tags">👤 ${item.persona}<br>🏙️ ${item.scenario}</div>
+                        ${bodyHTML}
+                    `;
+                    b.classList.remove('fade-out');
+                }, 500);
+            }
+        }
+        
+        fetchIdeas(); 
+        setInterval(fetchIdeas, 25000); 
+    </script>
+</body>
+</html>
