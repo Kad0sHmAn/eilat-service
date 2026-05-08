@@ -174,11 +174,11 @@
         
         // פונקציה לייצור מהירות אקראית וגבוהה יותר עם כיוון התחלתי מתחלף
         function getFastSpeed() {
-            const speed = (Math.random() * 1.5) + 0.8; 
+            const speed = (Math.random() * 1) + 0.8; 
             return Math.random() > 0.5 ? speed : -speed;
         }
         
-        const bubblesData = Array.from({ length: 7 }, () => ({
+        const bubblesData = Array.from({ length: 6 }, () => ({
             x: Math.random() * (window.innerWidth - getBubbleSize()),
             y: Math.random() * (window.innerHeight - getBubbleSize()),
             vx: getFastSpeed(), 
@@ -255,7 +255,7 @@
         }
         
         fetchIdeas(); 
-        setInterval(fetchIdeas, 25000); 
+        setInterval(fetchIdeas, 20000); 
     </script>
 </body>
 </html>
