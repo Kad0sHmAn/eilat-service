@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לוח רעיונות - תצוגה חכמה</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            background-image: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; 
+            position: relative;
+        }
+
+        h1 {
+            color: #38bdf8;
+            font-size: 3em;
+            margin-top: 40px;
+            text-align: center;
+            text-shadow: 0 4px 10px rgba(56, 189, 248, 0.3);
+            position: relative;
+            z-index: 10; 
+            pointer-events: none;
+        }
+
+        #loading {
+            font-size: 1.5em;
+            color: #94a3b8;
+            margin-top: 50px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .bubbles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        /* עיצוב הכדור - ברירת מחדל למסכים גדולים */
+        .bubble {
+            width: 320px; 
+            height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #38bdf8, #0284c7, #0369a1);
+            box-shadow: 
+                inset -20px -20px 40px rgba(0,0,0,0.3),
+                inset 10px 10px 30px rgba(255,255,255,0.4),
+                0 15px 35px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+            
+            position: absolute; 
+            top: 0;
+            left: 0;
+            
+            transition: opacity 0.8s ease-in-out; 
+            will-change: transform; 
+        }
+
+        .bubble-content {
+            width: 100%;
+            max-height: 100%;
+            overflow-y: auto;
+            padding-right: 5px;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }
+        
+        .bubble-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .bubble-tags {
+            font-size: 0.9em;
+            color: #e0f2fe;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .bubble-solution {
+            font-size: 1.1em; 
+            line-height: 1.5;
+            color: #ffffff;
+            white-space: pre-wrap;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .fade-out {
+            opacity: 0 !important;
+        }
+
+        /* =========================================
+           התאמות למובייל (מסכים קטנים מ-768 פיקסלים)
+           ========================================= */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em; /* כותרת קטנה יותר בנייד */
+                margin-top: 20px;
+            }
+
+            .bubble {
+                width: 180px;  /* כדור קטן בהרבה */
+                height: 180px;
+                padding: 15px; /* פחות ריווח פנימי */
+            }
+
+            .bubble-tags {
+                display: none; /* הסתרת הפרסונה והתרחיש בנייד! */
+            }
+
+            .bubble-solution {
+                font-size: 0.95em; /* טקסט מעט קטן יותר כדי שייכנס לכדור */
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>💡 קיר הרעיונות של אילת 2035</h1>
+    
+    <div id="loading">טוען רעיונות מהענן...</div>
+    
+    <div class="bubbles-container" id="bubblesContainer" style="display: none;">
+        <div class="bubble" id="bubble1">
+            <div class="bubble-content" id="content1"></div>
+        </div>
+        <div class="bubble" id="bubble2">
+            <div class="bubble-content" id="content2"></div>
+        </div>
+        <div class="bubble" id="bubble3">
+            <div class="bubble-content" id="content3"></div>
+        </div>
+        <div class="bubble" id="bubble4">
+            <div class="bubble-content" id="content4"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAcVlqfO_v4HGj7KC8-wPyC7EgWOmuyJ7A",
+            authDomain: "eilat-service-2035.firebaseapp.com",
+            projectId: "eilat-service-2035",
+            storageBucket: "eilat-service-2035.firebasestorage.app",
+            messagingSenderId: "12177419107",
+            appId: "1:12177419107:web:70e353e46294af5ef30156"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const bubblesContainer = document.getElementById('bubblesContainer');
+        const loading = document.getElementById('loading');
+        
+        let allIdeas = [];
+
+        // --- מנוע הפיזיקה (מעודכן לזהות גודל מסך) ---
+        
+        // פונקציה שבודקת את רוחב המסך ומחזירה את גודל הכדור המתאים
+        function getBubbleSize() {
+            return window.innerWidth <= 768 ? 180 : 320;
+        }
+        
+        function getRandomSpeed() {
+            // מהירות טיפה יותר איטית כדי שיהיה קריא במסכים קטנים
+            const speed = (Math.random() * 0.8) + 0.5; 
+            return Math.random() > 0.5 ? speed : -speed;
+        }
+
+        const initialSize = getBubbleSize();
+        
+        const bubblesData = Array.from({ length: 4 }, () => ({
+            x: Math.random() * Math.max(0, window.innerWidth - initialSize),
+            y: Math.random() * Math.max(0, window.innerHeight - initialSize),
+            vx: getRandomSpeed(),
+            vy: getRandomSpeed()
+        }));
+
+        function animate() {
+            // בכל פריים בודקים מחדש את גודל הכדור (במקרה שהמשתמש סובב את הטלפון)
+            const currentSize = getBubbleSize();
+            const maxX = Math.max(0, window.innerWidth - currentSize);
+            const maxY = Math.max(0, window.innerHeight - currentSize);
+
+            for (let i = 1; i <= 4; i++) {
+                const bubble = document.getElementById(`bubble${i}`);
+                if (!bubble) continue;
+                
+                let data = bubblesData[i - 1];
+
+                data.x += data.vx;
+                data.y += data.vy;
+
+                // בדיקת התנגשויות
+                if (data.x <= 0) {
+                    data.x = 0;
+                    data.vx *= -1;
+                } else if (data.x >= maxX) {
+                    data.x = maxX;
+                    data.vx *= -1;
+                }
+
+                if (data.y <= 0) {
+                    data.y = 0;
+                    data.vy *= -1;
+                } else if (data.y >= maxY) {
+                    data.y = maxY;
+                    data.vy *= -1;
+                }
+
+                bubble.style.transform = `translate(${data.x}px, ${data.y}px)`;
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+
+        // --- פונקציות שליפת הנתונים והטקסט ---
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        async function fetchIdeas() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "solutions"));
+                allIdeas = [];
+                querySnapshot.forEach((doc) => {
+                    allIdeas.push(doc.data());
+                });
+
+                if (allIdeas.length > 0) {
+                    loading.style.display = 'none';
+                    bubblesContainer.style.display = 'block';
+                    updateBubbles();
+                } else {
+                    loading.innerText = "עדיין אין רעיונות. מחכים לרעיונות הראשונים!";
+                }
+            } catch (error) {
+                console.error("Error fetching documents: ", error);
+                loading.innerText = "שגיאה בטעינת הנתונים.";
+            }
+        }
+
+        function updateBubbles() {
+            if (allIdeas.length === 0) return;
+
+            const shuffledIdeas = shuffleArray([...allIdeas]);
+            
+            while (shuffledIdeas.length < 4) {
+                shuffledIdeas.push(shuffledIdeas[Math.floor(Math.random() * shuffledIdeas.length)]);
+            }
+
+            const selectedIdeas = [shuffledIdeas[0], shuffledIdeas[1], shuffledIdeas[2], shuffledIdeas[3]];
+
+            for (let i = 1; i <= 4; i++) {
+                const bubble = document.getElementById(`bubble${i}`);
+                const contentDiv = document.getElementById(`content${i}`);
+                const idea = selectedIdeas[i-1];
+
+                bubble.classList.add('fade-out');
+
+                setTimeout(() => {
+                    contentDiv.innerHTML = `
+                        <div class="bubble-tags">
+                            👤 ${idea.persona}<br>
+                            🏙️ ${idea.scenario}
+                        </div>
+                        <div class="bubble-solution">${idea.solution}</div>
+                    `;
+                    bubble.classList.remove('fade-out');
+                }, 500); 
+            }
+        }
+
+        fetchIdeas();
+
+        setInterval(() => {
+            fetchIdeas(); 
+        }, 60000);
+
+    </script>
+</body>
+</html>
