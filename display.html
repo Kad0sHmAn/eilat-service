@@ -95,8 +95,7 @@
       border-radius: 50%;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      padding: 18px; /* הוקטן כדי לתת לתמונה יותר מקום */
-      text-align: center;
+      padding: 28px; text-align: center;
       overflow: hidden; will-change: transform;
       transition: opacity 0.7s ease;
       cursor: default;
@@ -125,14 +124,13 @@
       position: relative; z-index: 2;
       width: 100%; max-height: 100%;
       overflow: hidden;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding-top: 10px; 
+      display: flex; flex-direction: column; align-items: center;
     }
 
     .bubble-tags {
       font-size: 10.5px; font-weight: 900; color: var(--blue);
       border-bottom: 2px solid var(--gold);
-      padding-bottom: 4px; margin-bottom: 6px;
+      padding-bottom: 6px; margin-bottom: 7px;
       line-height: 1.3; width: 100%; text-align: center;
       flex-shrink: 0;
     }
@@ -140,40 +138,27 @@
       font-size: 13px; color: var(--navy); font-weight: 700;
       line-height: 1.35; word-break: break-word;
     }
-    
-    /* עיצוב מעודכן לתמונה כדי שלא תיחתך */
     .bubble-img {
-      max-width: 95%; 
-      max-height: 100px; /* מוגבל כדי שייכנס גם בכדורים הקטנים */
-      width: auto;
-      height: auto;
-      object-fit: contain; /* מבטיח שהתמונה תשמור על הפרופורציות ולא תיחתך */
-      border-radius: 8px;
+      max-width: 100%; max-height: 130px;
+      object-fit: contain; border-radius: 8px;
       border: 2px solid rgba(109,217,234,0.5);
-      margin-top: 4px;
     }
 
     .new-badge {
-      position: absolute; 
-      top: -6px; 
-      right: -2px; 
+      position: absolute; top: 18%; right: 5%;
       background: var(--coral); color: white;
       font-size: 10px; font-weight: 900;
       padding: 2px 10px; border-radius: 10px;
-      transform: rotate(12deg);
+      transform: rotate(10deg);
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      z-index: 10; letter-spacing: 0.5px;
-      pointer-events: none;
+      z-index: 3; letter-spacing: 0.5px;
     }
 
     .fade-out { opacity: 0 !important; }
 
     @media (max-width: 768px) {
-      .bubble { padding: 12px; }
       .bubble-tags { display: none; }
       .header-title { font-size: 18px; }
-      .new-badge { top: -2px; right: 0px; font-size: 9px; padding: 2px 8px; }
-      .bubble-img { max-height: 80px; }
     }
   </style>
 </head>
@@ -231,6 +216,8 @@
     const wrap = document.getElementById('bubbles-wrap');
 
     function getSize(i) { return window.innerWidth <= 768 ? 155 : SIZES[i]; }
+    function getW() { return document.documentElement.clientWidth; }
+    function getH() { return document.documentElement.clientHeight; }
 
     function initBubbles() {
       wrap.innerHTML = '';
@@ -245,6 +232,7 @@
         el.innerHTML = `<div class="bubble-inner" id="bi${i}"></div>`;
         wrap.appendChild(el);
         
+        // התחלה בתוך הגבולות בוודאות
         const x = Math.random() * Math.max(0, W - size);
         const y = Math.random() * Math.max(0, H - size);
         const speed = () => { const v = 0.45 + Math.random() * 0.65; return Math.random() > 0.5 ? v : -v; };
@@ -290,12 +278,14 @@
       });
     }
 
+    // ── Realtime subscription (Firebase onSnapshot) ──
     const q = query(collection(db, "solutions"), orderBy("timestamp", "desc"));
     
     onSnapshot(q, (snapshot) => {
         let tempIdeas = [];
         snapshot.forEach((doc) => {
             const data = doc.data();
+            // מסנן הקלטות שמע או נתוני מערכת ישנים כמו בקוד הקודם
             const isLegacyAudioText = typeof data.solution === 'string' && data.solution.includes("המשתמש הקליט הודעה קולית");
             if (data.type !== 'audio' && !isLegacyAudioText) {
                 tempIdeas.push(data);
@@ -314,6 +304,7 @@
     animate();
     
     window.addEventListener('resize', () => {
+      // עדכן את גודל וגבולות הכדורים הקיימים במקום לאתחל מחדש
       const W = wrap.clientWidth, H = wrap.clientHeight;
       bubbles.forEach((b, i) => {
         const newSize = getSize(i);
