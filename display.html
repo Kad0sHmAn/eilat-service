@@ -89,16 +89,22 @@
     }
 
     /* ── Bubbles ── */
-    .bubble {
+    .bubble-wrapper {
       position: absolute;
       top: 0; left: 0;
+      will-change: transform;
+      transition: opacity 0.7s ease;
+      cursor: default;
+    }
+
+    .bubble {
+      position: absolute;
+      inset: 0;
       border-radius: 50%;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       padding: 28px; text-align: center;
-      overflow: hidden; will-change: transform;
-      transition: opacity 0.7s ease;
-      cursor: default;
+      overflow: hidden; 
     }
 
     /* Glass effect */
@@ -125,7 +131,6 @@
       width: 100%; max-height: 100%;
       overflow: hidden;
       display: flex; flex-direction: column; align-items: center;
-      padding-top: 15px; /* הוספת מרווח עליון למניעת חסימה */
     }
 
     .bubble-tags {
@@ -145,18 +150,20 @@
       border: 2px solid rgba(109,217,234,0.5);
     }
 
-    /* תיקון מיקום תגית ה-NEW */
-    .new-badge {
+    /* תגית החדש יושבת עכשיו על גבול הכדור מבחוץ */
+    .badge-container {
       position: absolute; 
-      top: 10%; /* הזזה גבוה יותר */
-      right: 12%; /* הצמדה יותר לימין הקשת */
+      top: -5px; 
+      right: 15px; 
+      z-index: 10;
+    }
+    
+    .new-badge {
       background: var(--coral); color: white;
-      font-size: 9px; /* הקטנה קלה של הפונט */
-      font-weight: 900;
-      padding: 1px 8px; border-radius: 10px;
+      font-size: 11px; font-weight: 900;
+      padding: 3px 12px; border-radius: 12px;
       transform: rotate(15deg);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      z-index: 10; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       letter-spacing: 0.5px;
       pointer-events: none;
     }
@@ -164,9 +171,11 @@
     .fade-out { opacity: 0 !important; }
 
     @media (max-width: 768px) {
+      .bubble { padding: 15px; }
       .bubble-tags { display: none; }
       .header-title { font-size: 18px; }
-      .new-badge { top: 12%; right: 15%; }
+      .badge-container { top: -2px; right: 5px; }
+      .new-badge { font-size: 9px; padding: 2px 8px; }
     }
   </style>
 </head>
@@ -231,17 +240,27 @@
       const W = wrap.clientWidth, H = wrap.clientHeight;
       for (let i = 0; i < NUM_BUBBLES; i++) {
         const size = getSize(i);
-        const el = document.createElement('div');
-        el.className = 'bubble';
-        el.style.width = size + 'px';
-        el.style.height = size + 'px';
-        el.innerHTML = `<div class="bubble-inner" id="bi${i}"></div>`;
-        wrap.appendChild(el);
+        const wrapper = document.createElement('div');
+        wrapper.className = 'bubble-wrapper';
+        wrapper.style.width = size + 'px';
+        wrapper.style.height = size + 'px';
+        wrapper.innerHTML = `
+          <div class="badge-container"></div>
+          <div class="bubble">
+            <div class="bubble-inner" id="bi${i}"></div>
+          </div>
+        `;
+        wrap.appendChild(wrapper);
         
         const x = Math.random() * Math.max(0, W - size);
         const y = Math.random() * Math.max(0, H - size);
         const speed = () => { const v = 0.45 + Math.random() * 0.65; return Math.random() > 0.5 ? v : -v; };
-        bubbles.push({ el, inner: el.querySelector('.bubble-inner'), x, y, vx: speed(), vy: speed(), size });
+        bubbles.push({ 
+            el: wrapper, 
+            badgeContainer: wrapper.querySelector('.badge-container'),
+            inner: wrapper.querySelector('.bubble-inner'), 
+            x, y, vx: speed(), vy: speed(), size 
+        });
       }
     }
 
@@ -277,7 +296,12 @@
             ? `<img src="${item.image}" class="bubble-img" alt="פתקית">`
             : `<div class="bubble-text">${(item.solution || '').slice(0, 120)}</div>`;
           const badge = Math.random() > 0.78 ? '<div class="new-badge">חדש</div>' : '';
-          b.inner.innerHTML = `${badge}<div class="bubble-tags">👤 ${item.persona}<br>🏙️ ${item.scenario}</div>${bodyHTML}`;
+          
+          // הכנסת תגית החדש מחוץ לכדור כדי למנוע הסתרה
+          b.badgeContainer.innerHTML = badge;
+          // הכנסת הטקסט לתוך הכדור
+          b.inner.innerHTML = `<div class="bubble-tags">👤 ${item.persona}<br>🏙️ ${item.scenario}</div>${bodyHTML}`;
+          
           b.el.classList.remove('fade-out');
         }, 500 + i * 60);
       });
