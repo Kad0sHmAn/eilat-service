@@ -123,9 +123,9 @@
     .bubble-inner {
       position: relative; z-index: 2;
       width: 100%; max-height: 100%;
-      /* הסרנו את ה-overflow: hidden מפה כדי שהתגית לא תיחתך */
+      overflow: hidden;
       display: flex; flex-direction: column; align-items: center;
-      padding-top: 16px; /* מרווח כדי שהתגית 'חדש' לא תסתיר את הטקסט */
+      padding-top: 15px; /* הוספת מרווח עליון למניעת חסימה */
     }
 
     .bubble-tags {
@@ -140,32 +140,33 @@
       line-height: 1.35; word-break: break-word;
     }
     .bubble-img {
-      max-width: 100%; max-height: 120px;
+      max-width: 100%; max-height: 130px;
       object-fit: contain; border-radius: 8px;
       border: 2px solid rgba(109,217,234,0.5);
     }
 
-    /* תגית החדש בתוך הכדור */
+    /* תיקון מיקום תגית ה-NEW */
     .new-badge {
       position: absolute; 
-      top: -8px; 
-      right: -5px; 
+      top: 10%; /* הזזה גבוה יותר */
+      right: 12%; /* הצמדה יותר לימין הקשת */
       background: var(--coral); color: white;
-      font-size: 11px; font-weight: 900;
-      padding: 3px 10px; border-radius: 10px;
-      transform: rotate(12deg);
+      font-size: 9px; /* הקטנה קלה של הפונט */
+      font-weight: 900;
+      padding: 1px 8px; border-radius: 10px;
+      transform: rotate(15deg);
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      z-index: 10; letter-spacing: 0.5px;
+      z-index: 10; 
+      letter-spacing: 0.5px;
       pointer-events: none;
     }
 
     .fade-out { opacity: 0 !important; }
 
     @media (max-width: 768px) {
-      .bubble { padding: 15px; }
       .bubble-tags { display: none; }
       .header-title { font-size: 18px; }
-      .new-badge { font-size: 9px; padding: 2px 8px; top: -5px; right: -2px; }
+      .new-badge { top: 12%; right: 15%; }
     }
   </style>
 </head>
@@ -276,7 +277,6 @@
             ? `<img src="${item.image}" class="bubble-img" alt="פתקית">`
             : `<div class="bubble-text">${(item.solution || '').slice(0, 120)}</div>`;
           const badge = Math.random() > 0.78 ? '<div class="new-badge">חדש</div>' : '';
-          
           b.inner.innerHTML = `${badge}<div class="bubble-tags">👤 ${item.persona}<br>🏙️ ${item.scenario}</div>${bodyHTML}`;
           b.el.classList.remove('fade-out');
         }, 500 + i * 60);
