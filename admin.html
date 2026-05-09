@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>פאנל ניהול — אילת 2035</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0B2535;
+      --navy2: #16384f;
+      --blue: #1E3A7B;
+      --teal: #0DBDD4;
+      --teal-light: #6DD9EA;
+      --gold: #F5BA1A;
+      --coral: #E07B20;
+      --bg: #EBF6FA;
+      --card: #ffffff;
+      --muted: #5A7585;
+      --border: rgba(13,189,212,0.18);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: var(--bg); color: var(--navy);
+      direction: rtl; min-height: 100vh;
+    }
+
+    /* ── LOGIN OVERLAY ── */
+    #login-screen {
+      position: fixed; inset: 0; z-index: 999;
+      background: linear-gradient(160deg, var(--navy) 0%, var(--navy2) 55%, #0E3248 100%);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 0; text-align: center; padding: 30px;
+    }
+    #login-screen.hidden { display: none; }
+    .login-logo {
+      width: 72px; height: 72px; background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(13,189,212,0.4); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      box-shadow: 0 0 40px rgba(13,189,212,0.15);
+    }
+    .login-title { font-size: 22px; font-weight: 900; color: white; margin-bottom: 6px; }
+    .login-sub { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 30px; }
+    .login-field {
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.18);
+      border-radius: 12px; padding: 14px 18px;
+      font-size: 16px; color: white; font-family: inherit;
+      width: 100%; max-width: 300px; direction: ltr; text-align: center;
+      margin-bottom: 14px; transition: border-color 0.2s;
+    }
+    .login-field:focus { outline: none; border-color: var(--teal); }
+    .login-btn {
+      background: var(--teal); color: var(--navy);
+      border: none; padding: 14px 48px; border-radius: 30px;
+      font-size: 16px; font-weight: 900; cursor: pointer; font-family: inherit;
+      box-shadow: 0 6px 20px rgba(13,189,212,0.35);
+    }
+    .login-btn:active { transform: scale(0.97); }
+    .login-error { color: #FF6B6B; font-size: 13px; margin-top: 10px; min-height: 18px; font-weight: 700; }
+
+    /* ── MAIN LAYOUT ── */
+    #main-content { display: none; }
+    #main-content.visible { display: block; }
+
+    .top-bar {
+      background: var(--navy);
+      padding: 16px 28px;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 3px 20px rgba(0,0,0,0.25);
+    }
+    .top-bar-title { font-size: 18px; font-weight: 900; color: white; }
+    .top-bar-sub { font-size: 11px; color: var(--teal-light); font-weight: 600; margin-top: 1px; }
+    .top-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      padding: 9px 18px; border: none; border-radius: 22px;
+      font-weight: 800; cursor: pointer; font-size: 13px;
+      transition: 0.2s; display: flex; align-items: center; gap: 6px;
+      font-family: inherit;
+    }
+    .btn:active { transform: scale(0.96); }
+    .btn-teal { background: var(--teal); color: var(--navy); }
+    .btn-blue { background: var(--blue); color: white; }
+    .btn-gold { background: var(--gold); color: var(--navy); }
+    .btn-coral { background: var(--coral); color: white; }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px; padding: 24px 28px 0;
+    }
+    .stat-card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: 0 2px 12px rgba(11,37,53,0.07);
+      border-right: 5px solid var(--teal);
+      display: flex; flex-direction: column;
+    }
+    .stat-num { font-size: 34px; font-weight: 900; color: var(--navy); line-height: 1; }
+    .stat-lbl { font-size: 12px; color: var(--muted); font-weight: 700; margin-top: 4px; }
+
+    /* ── CHARTS ── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px; padding: 20px 28px 0;
+    }
+    .chart-card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 20px; box-shadow: 0 2px 12px rgba(11,37,53,0.07);
+    }
+    .chart-title { font-size: 13px; font-weight: 900; color: var(--blue); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .bar-chart { display: flex; flex-direction: column; gap: 8px; }
+    .bar-row { display: flex; align-items: center; gap: 10px; }
+    .bar-lbl { font-size: 11.5px; font-weight: 700; color: var(--navy); min-width: 80px; text-align: right; }
+    .bar-track { flex: 1; background: #EBF6FA; border-radius: 6px; height: 18px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 6px; background: var(--teal); transition: width 0.6s ease; }
+    .bar-val { font-size: 11px; font-weight: 800; color: var(--muted); min-width: 24px; }
+
+    /* ── FILTERS ── */
+    .filters-row {
+      padding: 20px 28px 0;
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    }
+    .filter-lbl { font-size: 13px; font-weight: 800; color: var(--navy); flex-shrink: 0; }
+    .filter-btn {
+      padding: 7px 16px; border-radius: 20px; border: 2px solid rgba(13,189,212,0.3);
+      background: white; font-size: 12px; font-weight: 700; color: var(--muted);
+      cursor: pointer; font-family: inherit; transition: 0.15s;
+    }
+    .filter-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+    .search-input {
+      margin-right: auto; border: 2px solid rgba(13,189,212,0.3); border-radius: 20px;
+      padding: 7px 16px; font-size: 13px; font-family: inherit; color: var(--navy);
+      background: white; direction: rtl; min-width: 200px;
+    }
+    .search-input:focus { outline: none; border-color: var(--teal); }
+
+    /* ── GRID ── */
+    .grid-section { padding: 20px 28px 40px; }
+    .grid-count { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 16px; }
+    .ideas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .idea-card {
+      background: var(--card); border-radius: var(--radius); padding: 18px;
+      box-shadow: 0 3px 14px rgba(11,37,53,0.07);
+      border: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 10px;
+      transition: box-shadow 0.2s;
+    }
+    .idea-card:hover { box-shadow: 0 8px 24px rgba(11,37,53,0.12); }
+    .idea-header {
+      font-size: 12px; font-weight: 800; color: var(--blue);
+      border-bottom: 3px solid var(--gold); padding-bottom: 10px;
+      line-height: 1.5;
+    }
+    .idea-type-badge {
+      display: inline-block;
+      font-size: 10px; font-weight: 800;
+      padding: 2px 10px; border-radius: 10px; margin-bottom: 4px;
+    }
+    .type-text { background: #EBF6FA; color: var(--blue); }
+    .type-image { background: #FEF3C7; color: #92400E; }
+    .type-audio { background: #FCE7F3; color: #9D174D; }
+    .idea-body { font-size: 14px; line-height: 1.55; color: #344455; font-weight: 600; word-wrap: break-word; white-space: pre-wrap; }
+    .idea-img { width: 100%; border-radius: 8px; border: 1px solid #e0edf4; object-fit: contain; max-height: 250px; }
+    .audio-player { width: 100%; height: 38px; border-radius: 20px; margin-top: 4px; }
+    .idea-meta { font-size: 11px; color: var(--muted); font-weight: 600; border-top: 1px solid #f0f4f7; padding-top: 8px; }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 16px; font-weight: 700; }
+
+    @media (max-width: 768px) {
+      .top-bar { padding: 14px 16px; flex-wrap: wrap; gap: 10px; }
+      .stats-row, .charts-row, .grid-section, .filters-row { padding-left: 16px; padding-right: 16px; }
+      .search-input { margin-right: 0; width: 100%; }
+    }
+
+    @media print {
+      #login-screen, .top-bar, .stats-row, .charts-row, .filters-row .filter-btn, .btn, .search-input { display: none !important; }
+      body { background: white; }
+      .idea-card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; margin-bottom: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="login-screen">
+  <div class="login-logo">
+    <svg width="34" height="34" viewBox="0 0 50 50" fill="none">
+      <circle cx="25" cy="25" r="22" stroke="#0DBDD4" stroke-width="2"/>
+      <path d="M15 32 C15 22, 25 16, 35 22" stroke="#6DD9EA" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <circle cx="25" cy="20" r="4.5" fill="#0DBDD4"/>
+      <path d="M18 35 L32 35" stroke="#F5BA1A" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="login-title">פאנל ניהול — אילת 2035</div>
+  <div class="login-sub">גישה לצוות הפנימי בלבד</div>
+  <input type="password" class="login-field" id="pass-input" placeholder="סיסמה" onkeydown="if(event.key==='Enter')tryLogin()">
+  <button class="login-btn" onclick="tryLogin()">כניסה →</button>
+  <div class="login-error" id="login-error"></div>
+</div>
+
+<!-- ── MAIN ── -->
+<div id="main-content">
+  <div class="top-bar">
+    <div>
+      <div class="top-bar-title">📊 פאנל ניהול — אילת 2035</div>
+      <div class="top-bar-sub" id="last-update">מחכה לנתונים...</div>
+    </div>
+    <div class="top-actions">
+      <button class="btn btn-teal" onclick="window.print()">📑 PDF</button>
+      <button class="btn btn-blue" id="btn-excel">📗 Excel</button>
+      <button class="btn btn-coral" id="btn-audio">🎙️ הקלטות</button>
+      <button class="btn btn-gold" onclick="window.location.href='index.html'">← פורטל</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-lbl">סה"כ תוצרים</div></div>
+    <div class="stat-card" style="border-color:var(--gold)"><div class="stat-num" id="stat-text" style="color:var(--blue)">—</div><div class="stat-lbl">כתובים</div></div>
+    <div class="stat-card" style="border-color:#E07B20"><div class="stat-num" id="stat-image" style="color:#E07B20">—</div><div class="stat-lbl">צילומים</div></div>
+    <div class="stat-card" style="border-color:#9D174D"><div class="stat-num" id="stat-audio" style="color:#9D174D">—</div><div class="stat-lbl">הקלטות</div></div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">🙋 פרסונות — שימוש</div>
+      <div class="bar-chart" id="chart-persona"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🏙️ תרחישים — שימוש</div>
+      <div class="bar-chart" id="chart-scenario"></div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-row">
+    <div class="filter-lbl">סינון:</div>
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">הכל</button>
+    <button class="filter-btn" data-filter="text" onclick="setFilter('text',this)">✏️ טקסט</button>
+    <button class="filter-btn" data-filter="image" onclick="setFilter('image',this)">📷 צילום</button>
+    <button class="filter-btn" data-filter="audio" onclick="setFilter('audio',this)">🎙️ הקלטות</button>
+    <input class="search-input" type="text" placeholder="🔍 חיפוש חופשי..." oninput="renderGrid()" id="search-box">
+  </div>
+
+  <!-- Grid -->
+  <div class="grid-section">
+    <div class="grid-count" id="grid-count"></div>
+    <div class="ideas-grid" id="ideas-grid"></div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const cfg = {
+    apiKey: "AIzaSyAcVlqfO_v4HGj7KC8-wPyC7EgWOmuyJ7A",
+    authDomain: "eilat-service-2035.firebaseapp.com",
+    projectId: "eilat-service-2035",
+    storageBucket: "eilat-service-2035.firebasestorage.app",
+    messagingSenderId: "12177419107",
+    appId: "1:12177419107:web:70e353e46294af5ef30156"
+  };
+
+  const app = initializeApp(cfg);
+  const db = getFirestore(app);
+
+  // Simple password gate (change this!)
+  const ADMIN_PASS = "eilat2035";
+  window.tryLogin = function() {
+    const v = document.getElementById('pass-input').value;
+    if (v === ADMIN_PASS) {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('main-content').classList.add('visible');
+      startListening();
+    } else {
+      document.getElementById('login-error').textContent = 'סיסמה שגויה. נסו שוב.';
+      document.getElementById('pass-input').value = '';
+    }
+  };
+
+  let allData = [];
+  let activeFilter = 'all';
+
+  window.setFilter = function(f, btn) {
+    activeFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGrid();
+  };
+
+  function startListening() {
+    const q = query(collection(db, "solutions"), orderBy("timestamp", "desc"));
+    onSnapshot(q, (snap) => {
+      allData = [];
+      snap.forEach(d => {
+        const data = d.data();
+        const isLegacy = typeof data.solution === 'string' && data.solution.includes("המשתמש הקליט הודעה קולית");
+        if (!isLegacy) allData.push(data);
+      });
+      updateStats();
+      updateCharts();
+      renderGrid();
+      document.getElementById('last-update').textContent = 'עדכון אחרון: ' + new Date().toLocaleTimeString('he-IL');
+    });
+  }
+
+  function updateStats() {
+    const texts  = allData.filter(d => d.type === 'text' || (!d.type));
+    const images = allData.filter(d => d.type === 'image');
+    const audios = allData.filter(d => d.type === 'audio');
+    document.getElementById('stat-total').textContent  = allData.length;
+    document.getElementById('stat-text').textContent   = texts.length;
+    document.getElementById('stat-image').textContent  = images.length;
+    document.getElementById('stat-audio').textContent  = audios.length;
+  }
+
+  function updateCharts() {
+    // Persona counts
+    const pCount = {};
+    allData.forEach(d => { if (d.persona) { const k = d.persona.split(' - ')[0]; pCount[k] = (pCount[k] || 0) + 1; } });
+    const pTop = Object.entries(pCount).sort((a,b) => b[1]-a[1]).slice(0, 8);
+    const pMax = pTop[0]?.[1] || 1;
+    document.getElementById('chart-persona').innerHTML = pTop.map(([name,cnt]) => `
+      <div class="bar-row">
+        <div class="bar-lbl">${name}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(cnt/pMax*100)}%;background:var(--teal)"></div></div>
+        <div class="bar-val">${cnt}</div>
+      </div>`).join('') || '<div style="color:var(--muted);font-size:12px">אין נתונים עדיין</div>';
+
+    // Scenario counts
+    const sCount = {};
+    allData.forEach(d => { if (d.scenario) { sCount[d.scenario] = (sCount[d.scenario] || 0) + 1; } });
+    const sTop = Object.entries(sCount).sort((a,b) => b[1]-a[1]).slice(0, 8);
+    const sMax = sTop[0]?.[1] || 1;
+    document.getElementById('chart-scenario').innerHTML = sTop.map(([name,cnt]) => `
+      <div class="bar-row">
+        <div class="bar-lbl">${name.slice(0, 16)}${name.length > 16 ? '...' : ''}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(cnt/sMax*100)}%;background:var(--blue)"></div></div>
+        <div class="bar-val">${cnt}</div>
+      </div>`).join('') || '<div style="color:var(--muted);font-size:12px">אין נתונים עדיין</div>';
+  }
+
+  window.renderGrid = function() {
+    const query = (document.getElementById('search-box')?.value || '').toLowerCase();
+    let filtered = allData.filter(d => {
+      if (activeFilter !== 'all' && d.type !== activeFilter) return false;
+      if (query) {
+        const hay = ((d.persona || '') + ' ' + (d.scenario || '') + ' ' + (d.solution || '') + ' ' + (d.submitterName || '')).toLowerCase();
+        return hay.includes(query);
+      }
+      return true;
+    });
+
+    document.getElementById('grid-count').textContent = `מציג ${filtered.length} תוצרים`;
+
+    if (filtered.length === 0) {
+      document.getElementById('ideas-grid').innerHTML = `<div class="empty-state">📭 אין תוצרים תואמים לסינון הנוכחי</div>`;
+      return;
+    }
+
+    document.getElementById('ideas-grid').innerHTML = filtered.map(item => {
+      let typeBadge = `<span class="idea-type-badge type-text">✏️ טקסט</span>`;
+      if (item.type === 'image') typeBadge = `<span class="idea-type-badge type-image">📷 צילום</span>`;
+      if (item.type === 'audio') typeBadge = `<span class="idea-type-badge type-audio">🎙️ הקלטה</span>`;
+
+      let body = '';
+      if (item.type === 'image' && item.image) {
+        body = `<img src="${item.image}" class="idea-img" alt="פתקית">`;
+      } else if (item.type === 'audio' && item.audio) {
+        body = `<audio controls class="audio-player"><source src="${item.audio}">הדפדפן אינו תומך.</audio>`;
+      } else {
+        body = `<div class="idea-body">${item.solution || ''}</div>`;
+      }
+
+      const dateStr = item.timestamp ? item.timestamp.toDate().toLocaleString('he-IL') : '';
+      const submitter = item.submitterName || 'אנונימי';
+
+      return `<div class="idea-card">
+        <div class="idea-header">${typeBadge}<br>👤 ${item.persona}<br>🏙️ ${item.scenario}</div>
+        ${body}
+        <div class="idea-meta">🗓️ ${dateStr} &nbsp;|&nbsp; 🙋 ${submitter}</div>
+      </div>`;
+    }).join('');
+  };
+
+  // ── Excel export ──
+  document.getElementById('btn-excel').onclick = () => {
+    if (allData.length === 0) return alert("אין נתונים להורדה");
+    let csv = "\uFEFF";
+    csv += "תאריך,שם שולח,פרסונה,תרחיש,סוג,תוכן\n";
+    allData.forEach(item => {
+      const date = item.timestamp ? item.timestamp.toDate().toLocaleString('he-IL') : '';
+      const name = (item.submitterName || 'אנונימי').replace(/"/g, '""');
+      const persona = (item.persona || '').replace(/"/g, '""');
+      const scenario = (item.scenario || '').replace(/"/g, '""');
+      let type = 'טקסט';
+      if (item.type === 'image') type = 'צילום פתקית';
+      if (item.type === 'audio') type = 'הקלטה קולית';
+      let content = '';
+      if (item.type === 'image') content = 'תמונה';
+      else if (item.type === 'audio') content = 'קובץ שמע';
+      else content = (item.solution || '').replace(/"/g, '""').replace(/\n/g, ' ');
+      csv += `"${date}","${name}","${persona}","${scenario}","${type}","${content}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `Eilat2035_${new Date().toLocaleDateString('he-IL').replace(/\//g,'-')}.csv`;
+    a.click();
+  };
+
+  // ── Download audio ──
+  document.getElementById('btn-audio').onclick = async () => {
+    const audios = allData.filter(d => d.type === 'audio' && d.audio);
+    if (audios.length === 0) return alert("אין הקלטות כרגע.");
+    if (!confirm(`נמצאו ${audios.length} הקלטות. להורידן?`)) return;
+    for (let i = 0; i < audios.length; i++) {
+      const item = audios[i];
+      const a = document.createElement("a");
+      a.href = item.audio;
+      const name = `${(item.submitterName || 'anon')}_${(item.persona||'').split(' ')[0]}_${i+1}`.replace(/[\\/:*?"<>|]/g,'');
+      a.download = `Audio_${name}.webm`;
+      a.click();
+      await new Promise(r => setTimeout(r, 500));
+    }
+  };
+</script>
+</body>
+</html>
