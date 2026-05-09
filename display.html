@@ -125,6 +125,7 @@
       width: 100%; max-height: 100%;
       overflow: hidden;
       display: flex; flex-direction: column; align-items: center;
+      padding-top: 15px; /* הוספת מרווח עליון למניעת חסימה */
     }
 
     .bubble-tags {
@@ -144,14 +145,20 @@
       border: 2px solid rgba(109,217,234,0.5);
     }
 
+    /* תיקון מיקום תגית ה-NEW */
     .new-badge {
-      position: absolute; top: 18%; right: 5%;
+      position: absolute; 
+      top: 10%; /* הזזה גבוה יותר */
+      right: 12%; /* הצמדה יותר לימין הקשת */
       background: var(--coral); color: white;
-      font-size: 10px; font-weight: 900;
-      padding: 2px 10px; border-radius: 10px;
-      transform: rotate(10deg);
+      font-size: 9px; /* הקטנה קלה של הפונט */
+      font-weight: 900;
+      padding: 1px 8px; border-radius: 10px;
+      transform: rotate(15deg);
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      z-index: 3; letter-spacing: 0.5px;
+      z-index: 10; 
+      letter-spacing: 0.5px;
+      pointer-events: none;
     }
 
     .fade-out { opacity: 0 !important; }
@@ -159,6 +166,7 @@
     @media (max-width: 768px) {
       .bubble-tags { display: none; }
       .header-title { font-size: 18px; }
+      .new-badge { top: 12%; right: 15%; }
     }
   </style>
 </head>
@@ -216,8 +224,6 @@
     const wrap = document.getElementById('bubbles-wrap');
 
     function getSize(i) { return window.innerWidth <= 768 ? 155 : SIZES[i]; }
-    function getW() { return document.documentElement.clientWidth; }
-    function getH() { return document.documentElement.clientHeight; }
 
     function initBubbles() {
       wrap.innerHTML = '';
@@ -232,7 +238,6 @@
         el.innerHTML = `<div class="bubble-inner" id="bi${i}"></div>`;
         wrap.appendChild(el);
         
-        // התחלה בתוך הגבולות בוודאות
         const x = Math.random() * Math.max(0, W - size);
         const y = Math.random() * Math.max(0, H - size);
         const speed = () => { const v = 0.45 + Math.random() * 0.65; return Math.random() > 0.5 ? v : -v; };
@@ -278,14 +283,12 @@
       });
     }
 
-    // ── Realtime subscription (Firebase onSnapshot) ──
     const q = query(collection(db, "solutions"), orderBy("timestamp", "desc"));
     
     onSnapshot(q, (snapshot) => {
         let tempIdeas = [];
         snapshot.forEach((doc) => {
             const data = doc.data();
-            // מסנן הקלטות שמע או נתוני מערכת ישנים כמו בקוד הקודם
             const isLegacyAudioText = typeof data.solution === 'string' && data.solution.includes("המשתמש הקליט הודעה קולית");
             if (data.type !== 'audio' && !isLegacyAudioText) {
                 tempIdeas.push(data);
@@ -304,7 +307,6 @@
     animate();
     
     window.addEventListener('resize', () => {
-      // עדכן את גודל וגבולות הכדורים הקיימים במקום לאתחל מחדש
       const W = wrap.clientWidth, H = wrap.clientHeight;
       bubbles.forEach((b, i) => {
         const newSize = getSize(i);
