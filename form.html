@@ -162,11 +162,11 @@
     
     .card-img-wrapper {
         width: 100%;
-        background: var(--white);
+        background: #f1f5f9; /* צבע רקע עדין בזמן שהתמונה נטענת */
         display: flex;
         align-items: center;
         justify-content: center;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid #e0eaf0;
         overflow: hidden; 
         padding: 0; 
     }
@@ -183,6 +183,12 @@
         width: 100%; 
         height: 100%; 
         object-fit: cover; 
+        opacity: 0;
+        transition: opacity 0.3s ease-in; /* כשהתמונה נטענת היא תופיע ב-Fade עדין */
+    }
+    
+    .card-img-wrapper img.loaded {
+        opacity: 1;
     }
     
     .card-label { padding: 8px 4px; font-size: 12px; font-weight: 800; color: var(--navy); text-align: center; line-height: 1.2; background: white; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;}
@@ -190,17 +196,13 @@
 
     .detail-container { flex: 1; overflow-y: auto; padding: 0 0 120px; }
     
-    .detail-hero { position: relative; width: 100%; background: var(--white); text-align: center; overflow: hidden; }
+    .detail-hero { position: relative; width: 100%; background: #f1f5f9; text-align: center; overflow: hidden; }
     
     .detail-hero-img { width: 100%; display: inline-block; background: var(--white); }
     
-    /* תמונת פרסונה - תופסת את כל האזור בלי ליצור גלילה. פוקוס על הפנים/החלק העליון */
     .detail-hero-img.persona-detail-img { width: 100%; height: 220px; object-fit: cover; object-position: center 15%; }
-    
-    /* תמונת תרחיש - תופסת את כל האזור בלי ליצור גלילה */
     .detail-hero-img.scenario-detail-img { width: 100%; height: 220px; object-fit: cover; object-position: center; }
     
-    /* ביטול ריווח עליון כדי שהתמונה תגיע לקצה המסך */
     #persona-detail-content .detail-hero { padding-top: 0; }
     #scenario-detail-content .detail-hero { padding-top: 0; }
 
@@ -208,7 +210,6 @@
     .detail-hero-name { color: white; font-size: 26px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     .detail-hero-sub { color: var(--turquoise-light); font-size: 15px; margin-top: 2px; font-weight: 600;}
     
-    /* מיקוד וצמצום קל של ריווחים כדי שהכל ייכנס במסך אחד בלי לגלול */
     .detail-body { padding: 15px 20px; }
     .detail-section { background: white; border-radius: var(--radius); padding: 14px 18px; margin-bottom: 12px; box-shadow: var(--shadow); }
     .detail-section-label { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
@@ -587,7 +588,7 @@ function renderPersonaGrid() {
   grid.innerHTML = PERSONAS.map(p => `
     <div class="card ${state.persona?.id === p.id ? 'selected' : ''}" onclick="selectPersona(${p.id})">
       <div class="card-img-wrapper">
-        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        <img src="${p.img}" alt="${p.name}" onload="this.classList.add('loaded')" loading="lazy">
       </div>
       <div class="card-label">
         ${p.name}<br><span class="card-subtitle">${p.sub}</span>
@@ -601,7 +602,7 @@ function renderScenarioGrid() {
   grid.innerHTML = SCENARIOS.map(s => `
     <div class="card ${state.scenario?.id === s.id ? 'selected' : ''}" onclick="selectScenario(${s.id})">
       <div class="card-img-wrapper">
-        <img src="${s.img}" alt="${s.name}" loading="lazy">
+        <img src="${s.img}" alt="${s.name}" onload="this.classList.add('loaded')" loading="lazy">
       </div>
       <div class="card-label">${s.name}</div>
     </div>
@@ -867,6 +868,27 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
+
+// פונקציה לטעינה מוקדמת של התמונות ברקע
+function preloadImages() {
+  const imagesToPreload = [
+    ...PERSONAS.map(p => p.img),
+    ...SCENARIOS.map(s => s.img)
+  ];
+  
+  imagesToPreload.forEach(src => {
+    if(src) {
+      const img = new Image();
+      img.src = src;
+    }
+  });
+}
+
+// הפעלת הטעינה המוקדמת חצי שנייה אחרי שהדף עולה (כדי לא לעכב את המסך הראשון)
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(preloadImages, 500);
+});
+
 </script>
 </body>
 </html>
