@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אילת 2035 — לוח רעיונות</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0B2535;
+      --blue: #1E3A7B;
+      --teal: #0DBDD4;
+      --teal-light: #6DD9EA;
+      --gold: #F5BA1A;
+      --coral: #E07B20;
+      --bg1: #C8EEF6;
+      --bg2: #A4DCEC;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: linear-gradient(145deg, var(--bg1) 0%, var(--bg2) 60%, #8DD4E8 100%);
+      height: 100vh; width: 100vw;
+      overflow: hidden; position: relative;
+    }
+
+    /* ── Ambient light orbs ── */
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none; opacity: 0.55;
+    }
+    .orb1 { width: 500px; height: 500px; background: rgba(13,189,212,0.3); top: -150px; left: -100px; }
+    .orb2 { width: 400px; height: 400px; background: rgba(30,58,123,0.2); bottom: -100px; right: -80px; }
+    .orb3 { width: 300px; height: 300px; background: rgba(245,186,26,0.15); top: 40%; left: 40%; }
+
+    /* ── Header ── */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      padding: 22px 40px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      pointer-events: none;
+    }
+    .header-logo {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .logo-mark {
+      width: 44px; height: 44px;
+      background: var(--navy); border-radius: 50%;
+      border: 2px solid rgba(13,189,212,0.5);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    }
+    .logo-text { font-size: 13px; font-weight: 900; color: var(--navy); letter-spacing: 0.5px; line-height: 1.2; }
+    .logo-sub { font-size: 11px; font-weight: 600; color: rgba(11,37,53,0.6); }
+    .header-title {
+      font-size: 26px; font-weight: 900; color: var(--navy);
+      text-shadow: 0 2px 8px rgba(255,255,255,0.6);
+      letter-spacing: -0.5px;
+    }
+    .live-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 30px; padding: 8px 16px;
+      font-size: 13px; font-weight: 800; color: var(--navy);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .live-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: #22C55E;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+      animation: livePulse 1.5s ease-in-out infinite;
+    }
+    @keyframes livePulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(34,197,94,0.25); }
+      50% { box-shadow: 0 0 0 7px rgba(34,197,94,0.1); }
+    }
+    #live-count { color: var(--teal); font-weight: 900; }
+
+    /* ── Bubbles container ── */
+    #bubbles-wrap {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Bubbles ── */
+    .bubble {
+      position: absolute;
+      top: 0; left: 0;
+      border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 28px; text-align: center;
+      overflow: hidden; will-change: transform;
+      transition: opacity 0.7s ease;
+      cursor: default;
+    }
+
+    /* Glass effect */
+    .bubble::before {
+      content: '';
+      position: absolute; inset: 0; border-radius: 50%;
+      background: rgba(255,255,255,0.62);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
+      border: 1.5px solid rgba(255,255,255,0.85);
+      box-shadow: inset 0 2px 8px rgba(255,255,255,0.6), 0 12px 40px rgba(11,37,53,0.1);
+    }
+
+    /* Shine highlight */
+    .bubble::after {
+      content: '';
+      position: absolute; top: 8%; left: 20%; width: 50%; height: 30%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0) 100%);
+      border-radius: 50%; pointer-events: none;
+    }
+
+    .bubble-inner {
+      position: relative; z-index: 2;
+      width: 100%; max-height: 100%;
+      overflow: hidden;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    .bubble-tags {
+      font-size: 10.5px; font-weight: 900; color: var(--blue);
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 6px; margin-bottom: 7px;
+      line-height: 1.3; width: 100%; text-align: center;
+      flex-shrink: 0;
+    }
+    .bubble-text {
+      font-size: 13px; color: var(--navy); font-weight: 700;
+      line-height: 1.35; word-break: break-word;
+    }
+    .bubble-img {
+      max-width: 100%; max-height: 130px;
+      object-fit: contain; border-radius: 8px;
+      border: 2px solid rgba(109,217,234,0.5);
+    }
+
+    .new-badge {
+      position: absolute; top: 18%; right: 5%;
+      background: var(--coral); color: white;
+      font-size: 10px; font-weight: 900;
+      padding: 2px 10px; border-radius: 10px;
+      transform: rotate(10deg);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      z-index: 3; letter-spacing: 0.5px;
+    }
+
+    .fade-out { opacity: 0 !important; }
+
+    @media (max-width: 768px) {
+      .bubble-tags { display: none; }
+      .header-title { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <div class="header">
+    <div class="header-logo">
+      <div class="logo-mark">
+        <svg width="22" height="22" viewBox="0 0 50 50" fill="none">
+          <circle cx="25" cy="25" r="22" stroke="#0DBDD4" stroke-width="2"/>
+          <path d="M15 32 C15 22, 25 16, 35 22" stroke="#6DD9EA" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <circle cx="25" cy="20" r="4.5" fill="#0DBDD4"/>
+          <path d="M18 35 L32 35" stroke="#F5BA1A" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">אילת 2035</div>
+        <div class="logo-sub">צוות החדשנות · הזירה אילת</div>
+      </div>
+    </div>
+    <div class="header-title">תושבים מעצבים חווית שירות</div>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      <span>LIVE —</span> <span id="live-count">0</span> <span>רעיונות</span>
+    </div>
+  </div>
+
+  <div id="bubbles-wrap"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAcVlqfO_v4HGj7KC8-wPyC7EgWOmuyJ7A",
+        authDomain: "eilat-service-2035.firebaseapp.com",
+        projectId: "eilat-service-2035",
+        storageBucket: "eilat-service-2035.firebasestorage.app",
+        messagingSenderId: "12177419107",
+        appId: "1:12177419107:web:70e353e46294af5ef30156"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const NUM_BUBBLES = 9;
+    const SIZES = [260, 240, 220, 200, 210, 250, 230, 215, 205];
+
+    let allIdeas = [];
+    let bubbles = [];
+    const wrap = document.getElementById('bubbles-wrap');
+
+    function getSize(i) { return window.innerWidth <= 768 ? 155 : SIZES[i]; }
+    function getW() { return document.documentElement.clientWidth; }
+    function getH() { return document.documentElement.clientHeight; }
+
+    function initBubbles() {
+      wrap.innerHTML = '';
+      bubbles = [];
+      const W = wrap.clientWidth, H = wrap.clientHeight;
+      for (let i = 0; i < NUM_BUBBLES; i++) {
+        const size = getSize(i);
+        const el = document.createElement('div');
+        el.className = 'bubble';
+        el.style.width = size + 'px';
+        el.style.height = size + 'px';
+        el.innerHTML = `<div class="bubble-inner" id="bi${i}"></div>`;
+        wrap.appendChild(el);
+        
+        // התחלה בתוך הגבולות בוודאות
+        const x = Math.random() * Math.max(0, W - size);
+        const y = Math.random() * Math.max(0, H - size);
+        const speed = () => { const v = 0.45 + Math.random() * 0.65; return Math.random() > 0.5 ? v : -v; };
+        bubbles.push({ el, inner: el.querySelector('.bubble-inner'), x, y, vx: speed(), vy: speed(), size });
+      }
+    }
+
+    function animate() {
+      const W = wrap.clientWidth;
+      const H = wrap.clientHeight;
+      for (let b of bubbles) {
+        b.x += b.vx;
+        b.y += b.vy;
+        const maxX = W - b.size;
+        const maxY = H - b.size;
+        if (b.x < 0)    { b.x = 0;    b.vx = Math.abs(b.vx); }
+        if (b.x > maxX) { b.x = maxX; b.vx = -Math.abs(b.vx); }
+        if (b.y < 0)    { b.y = 0;    b.vy = Math.abs(b.vy); }
+        if (b.y > maxY) { b.y = maxY; b.vy = -Math.abs(b.vy); }
+        b.el.style.transform = `translate3d(${b.x}px,${b.y}px,0)`;
+      }
+      requestAnimationFrame(animate);
+    }
+
+    let refreshTimer = null;
+    function refreshContent() {
+      if (allIdeas.length === 0) return;
+      let pool = [...allIdeas].sort(() => 0.5 - Math.random());
+      while (pool.length < NUM_BUBBLES) pool.push(...allIdeas);
+      pool = pool.slice(0, NUM_BUBBLES);
+      
+      bubbles.forEach((b, i) => {
+        const item = pool[i];
+        b.el.classList.add('fade-out');
+        setTimeout(() => {
+          const bodyHTML = item.type === 'image' && item.image
+            ? `<img src="${item.image}" class="bubble-img" alt="פתקית">`
+            : `<div class="bubble-text">${(item.solution || '').slice(0, 120)}</div>`;
+          const badge = Math.random() > 0.78 ? '<div class="new-badge">חדש</div>' : '';
+          b.inner.innerHTML = `${badge}<div class="bubble-tags">👤 ${item.persona}<br>🏙️ ${item.scenario}</div>${bodyHTML}`;
+          b.el.classList.remove('fade-out');
+        }, 500 + i * 60);
+      });
+    }
+
+    // ── Realtime subscription (Firebase onSnapshot) ──
+    const q = query(collection(db, "solutions"), orderBy("timestamp", "desc"));
+    
+    onSnapshot(q, (snapshot) => {
+        let tempIdeas = [];
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            // מסנן הקלטות שמע או נתוני מערכת ישנים כמו בקוד הקודם
+            const isLegacyAudioText = typeof data.solution === 'string' && data.solution.includes("המשתמש הקליט הודעה קולית");
+            if (data.type !== 'audio' && !isLegacyAudioText) {
+                tempIdeas.push(data);
+            }
+        });
+        
+        allIdeas = tempIdeas;
+        document.getElementById('live-count').textContent = allIdeas.length;
+        
+        clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(refreshContent, 400);
+    });
+
+    setInterval(refreshContent, 25000);
+    initBubbles();
+    animate();
+    
+    window.addEventListener('resize', () => {
+      // עדכן את גודל וגבולות הכדורים הקיימים במקום לאתחל מחדש
+      const W = wrap.clientWidth, H = wrap.clientHeight;
+      bubbles.forEach((b, i) => {
+        const newSize = getSize(i);
+        b.size = newSize;
+        b.el.style.width = newSize + 'px';
+        b.el.style.height = newSize + 'px';
+        b.x = Math.min(b.x, Math.max(0, W - newSize));
+        b.y = Math.min(b.y, Math.max(0, H - newSize));
+      });
+    });
+  </script>
+</body>
+</html>
